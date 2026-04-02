@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  frontend:
+    image: wgtechsolutions/dashboard-frontend:latest
+    container_name: dashboard-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    image: wgtechsolutions/dashboard-backend:latest
+    container_name: dashboard-backend
+    expose:
+      - "8000"
+    group_add:
+      - "44"
+    volumes:
+      - ./data/recordings:/app/data/recordings
+      - ./data/uploads:/app/data/uploads
+      - ./data/models:/app/data/models
+      - ./data/hls:/app/data/hls
+      - /tmp/hls:/tmp/hls
+    env_file:
+      - .env
+    devices:
+      - /dev/video0:/dev/video0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  default:
+    name: app-net
+    driver: bridge
