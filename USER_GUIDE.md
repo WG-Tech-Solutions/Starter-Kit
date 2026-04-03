@@ -60,7 +60,7 @@ This page is used to save recordings. There is a default path where recordings a
 **Steps:**
 Select Slot → Start Recording → Pause or Stop Recording
 
-![Recording](Images/recording.png)
+![Recording](Images/Recording.png)
 
 **Important:** Recording duration should be a minimum of 15 seconds.
 
