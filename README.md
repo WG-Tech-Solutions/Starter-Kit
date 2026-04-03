@@ -9,8 +9,8 @@
 Run this on your **desktop or laptop** (not the Pi yet):
 
 ```bash
-git clone https://github.com/wgtechsolutions/starter-kit.git
-cd starter-kit
+git clone https://github.com/WG-Tech-Solutions/Starter-Kit.git
+cd Starter-Kit
 ```
 
 Or download and extract the ZIP from GitHub if you don't have git installed.
@@ -85,7 +85,10 @@ If all six pass, continue to the next section.
 ## File overview
 
 ```
-starter-kit/
+Starter-Kit/
+├── aistarterpack.html    ← hardware setup guide — start here
+├── README.md             ← this file — deployment and setup
+├── userguide.md          ← how to use the dashboard after setup
 ├── start.sh              ← main entry point — run this every time
 ├── start_voyager.sh      ← starts voyager-sdk container + MediaMTX
 ├── setup.sh              ← installs MediaMTX, builds .env, handles USB camera
@@ -103,6 +106,14 @@ starter-kit/
 
 ---
 
+## Using the dashboard
+
+Once the dashboard is running, refer to **`userguide.md`** in this repo for a full walkthrough of the application — connecting cameras, running inference, managing recordings, uploading custom models, and everything else the dashboard can do.
+
+Open it in any markdown viewer, or read it directly on GitHub alongside this README.
+
+---
+
 ## First-time setup
 
 ### Step 1 — Make scripts executable
@@ -110,7 +121,7 @@ starter-kit/
 Open a terminal on the Pi and navigate to this folder:
 
 ```bash
-cd ~/starter-kit        # or wherever you placed this folder
+cd ~/Starter-Kit        # or wherever you placed this folder
 chmod +x start.sh start_voyager.sh setup.sh
 ```
 
@@ -151,7 +162,7 @@ This does three things in order:
 
 1. **Starts the Voyager SDK** — launches the `voyager-sdk` container, copies service files into it, installs dependencies, detects the container IP, updates `.env`, and starts `ai_server.py`
 2. **Runs setup** — installs MediaMTX if needed, detects your USB camera and updates `docker-compose.yml` accordingly
-3. **Starts the dashboard** — pulls `docker compose up`, waits for the backend health check to pass
+3. **Starts the dashboard** — runs `docker compose up`, waits for the backend health check to pass
 
 When it finishes you will see:
 
