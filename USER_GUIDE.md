@@ -102,7 +102,7 @@ Click **Add Model**, then select the model type: Default Model or Custom Model.
 - COCO Class IDs
 - Description
 
-![Default Model](Images/default.png)
+![Default Model](Images/Defaultmode.png)
 
 ---
 
@@ -116,7 +116,7 @@ Click **Add Model**, then select the model type: Default Model or Custom Model.
 - Model Weights
 - Calibration Dataset
 
-![Custom Model](Images/custom.png)
+![Custom Model](Images/Custom.png)
 
 ---
 
@@ -124,7 +124,7 @@ Click **Add Model**, then select the model type: Default Model or Custom Model.
 
 Click **Deploy** to start the deployment process.
 
-![Deployment](Images/deployment.png)
+![Deployment](Images/Deployment.png)
 
 After clicking Deploy, the model appears under **Active Models** while deployment is in progress (typically 20–60 minutes).
 
