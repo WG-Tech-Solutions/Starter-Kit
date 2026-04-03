@@ -1,8 +1,10 @@
 # WGtech AI Starter Pack — Dashboard
 
----
+<p align="justify">
+This Starter Kit is designed to empower university students, researchers, and enthusiasts to explore Edge AI through a comprehensive platform for computer vision development and deployment. Built with industry-standard components and advanced AI acceleration technologies, it enables users to run, compare, and analyze Vision AI models in real-world scenarios, supporting academic projects, experimentation, and applied research.
+</p>
 
-## ⚠️ Start here — follow these steps in order
+## 🚀 Getting Started — Follow These Steps
 
 ### Step 1 — Clone this repo
 
