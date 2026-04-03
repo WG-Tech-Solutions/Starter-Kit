@@ -47,7 +47,7 @@ If `.mp4` files are present in the local storage of your computer, browse and in
 **Steps:**
 Choose File → Use Video File → Start Stream
 
-![Video File](Images/video_file.png)
+![Video File](Images/Video_file.png)
 
 When the **Use Video File** button is clicked, a notification appears confirming the selected file (e.g., Ocean.mp4).
 
