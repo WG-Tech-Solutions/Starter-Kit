@@ -90,7 +90,7 @@ The application includes a default model, YOLOv8 (You Only Look Once), pretraine
 
 Click **Add Model**, then select the model type: Default Model or Custom Model.
 
-![Add Model](Images/addmodel.png)
+![Add Model](Images/Addmodel.png)
 
 ---
 
