@@ -34,7 +34,7 @@ If USB cameras are connected to the Raspberry Pi 5 USB ports, they can be access
 **Steps:**
 Select a camera (from the dropdown list) → Start Stream
 
-![USB](Images/usb.png)
+![USB](Images/USB.png)
 
 If the USB camera is not visible in the application, use the refresh icon to reload available devices.
 
