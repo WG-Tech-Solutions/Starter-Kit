@@ -82,7 +82,7 @@ This page is used to manage models for inferencing.
 
 The application includes a default model, YOLOv8 (You Only Look Once), pretrained on the COCO dataset. You can also upload your own custom models. Currently, any custom trained YOLO models with a dataset can be uploaded.
 
-![Model](Images/model.png)
+![Model](Images/Model.png)
 
 ---
 
