@@ -2,28 +2,37 @@
 
 ---
 
-## ⚠️ Start here — read before touching anything
+## ⚠️ Start here — follow these steps in order
 
-**This repo contains two things:**
+### Step 1 — Clone this repo
 
-| File | What it is | Do this first |
-|---|---|---|
-| `aistarterpack.html` | Hardware setup guide | **Yes — complete this first** |
-| Everything else | Dashboard scripts | Only after the guide is done |
+Run this on your **desktop or laptop** (not the Pi yet):
 
-**Open `aistarterpack.html` in a browser on your desktop or laptop:**
-
-```
-Right-click aistarterpack.html → Open with → your browser
+```bash
+git clone https://github.com/wgtechsolutions/starter-kit.git
+cd starter-kit
 ```
 
-That guide takes you from a blank microSD card all the way through flashing Raspberry Pi OS, installing the Axelera Metis driver, setting up Docker, and confirming AI inference is working on the AIPU. It takes 20–50 minutes.
+Or download and extract the ZIP from GitHub if you don't have git installed.
 
-**Come back to this README only after you have:**
-1. Completed every section of `aistarterpack.html` (Sections 1–10)
-2. Confirmed inference is running — you saw FPS output from `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the `voyager-sdk` container
+### Step 2 — Open aistarterpack.html
 
-If you skip the HTML guide and run these scripts first, they will fail — the `voyager-sdk` container and Axelera driver that these scripts depend on will not exist yet.
+Inside the cloned folder you will find `aistarterpack.html`. Open it in a browser:
+
+- **Windows / macOS:** double-click `aistarterpack.html`
+- **Linux:** `xdg-open aistarterpack.html`
+
+That guide walks you through everything on the Raspberry Pi — flashing the OS, enabling PCIe Gen3, installing Docker, installing the Axelera Metis driver, and confirming AI inference is working on the AIPU. It takes 20–50 minutes.
+
+**Do not run any scripts in this repo until you have finished the HTML guide.** The scripts depend on the `voyager-sdk` container and Axelera driver that the guide sets up — they will fail if those are not in place.
+
+### Step 3 — Come back here
+
+Return to this README after you have:
+- Completed all 10 sections of `aistarterpack.html`
+- Seen FPS output from `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the `voyager-sdk` container
+
+Then continue to the prerequisites section below.
 
 ---
 
