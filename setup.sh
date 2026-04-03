@@ -1,6 +1,7 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
 # Starter Kit — First-time setup
+# Run once before start.sh, or re-run to reconfigure.
 # ─────────────────────────────────────────────────────────────────────────────
 set -e
 
@@ -9,6 +10,9 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 CYAN='\033[0;36m'
 NC='\033[0m'
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
 
 echo -e "${CYAN}=== Starter Kit Setup ===${NC}"
 
@@ -57,31 +61,42 @@ else
     echo -e "${GREEN}✓ MediaMTX config already exists${NC}"
 fi
 
-# ── 3. Get voyager-sdk IP and build .env ──────────────────────────────────────
-echo "Detecting voyager-sdk IP..."
+# ── 3. Get voyager-sdk IP via docker exec ─────────────────────────────────────
+echo "Detecting voyager-sdk container IP..."
 
 VOYAGER_IP=""
 
-# Try to exec into voyager-sdk container and get its IP
 if sudo docker ps --format '{{.Names}}' | grep -q "^voyager-sdk$"; then
-    VOYAGER_IP=$(sudo docker exec voyager-sdk hostname -I 2>/dev/null | awk '{print $1}')
-    echo -e "${GREEN}✓ Found voyager-sdk container IP: ${VOYAGER_IP}${NC}"
-else
-    # voyager-sdk uses host network — fall back to docker bridge gateway
-    VOYAGER_IP=$(ip route show | grep 'docker0' | awk '{print $9}' 2>/dev/null)
-    if [ -z "$VOYAGER_IP" ]; then
-        # last resort hardcoded default
-        VOYAGER_IP="172.17.0.1"
+    # Exec into the container, run ip addr, pull the first non-loopback inet addr
+    VOYAGER_IP=$(sudo docker exec voyager-sdk ip addr show \
+        | grep 'inet ' \
+        | grep -v '127.0.0.1' \
+        | awk '{print $2}' \
+        | cut -d/ -f1 \
+        | head -1)
+
+    if [ -n "$VOYAGER_IP" ]; then
+        echo -e "${GREEN}✓ voyager-sdk IP: ${VOYAGER_IP}${NC}"
+    else
+        echo -e "${YELLOW}WARNING: Could not parse IP from voyager-sdk — falling back${NC}"
     fi
-    echo -e "${YELLOW}voyager-sdk not running yet — using bridge IP: ${VOYAGER_IP}${NC}"
-    echo -e "${YELLOW}  (start_voyager.sh will be called by start.sh after this)${NC}"
+else
+    echo -e "${YELLOW}voyager-sdk not running yet — will be started by start_voyager.sh${NC}"
 fi
 
-# ── 4. Create .env ────────────────────────────────────────────────────────────
-if [ -f .env ]; then
-    echo -e "${GREEN}✓ .env already exists — skipping${NC}"
+# Fallback: Pi LAN IP (reachable from any bridge container)
+if [ -z "$VOYAGER_IP" ]; then
+    VOYAGER_IP=$(hostname -I | awk '{print $1}')
+    echo -e "${YELLOW}  Using Pi LAN IP as fallback: ${VOYAGER_IP}${NC}"
+fi
+
+# ── 4. Create or update .env ──────────────────────────────────────────────────
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    # Update VOYAGER_SDK_URL in existing .env
+    sed -i "s|^VOYAGER_SDK_URL=.*|VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001|" "$SCRIPT_DIR/.env"
+    echo -e "${GREEN}✓ .env updated (VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001)${NC}"
 else
-    cat > .env << ENVEOF
+    cat > "$SCRIPT_DIR/.env" << ENVEOF
 # ── App ───────────────────────────────────────────────────────────────────────
 APP_ENV=production
 APP_HOST=0.0.0.0
@@ -109,15 +124,49 @@ ENVEOF
 fi
 
 # ── 5. Create data directories ────────────────────────────────────────────────
-mkdir -p data/recordings data/uploads data/models data/hls
+mkdir -p "$SCRIPT_DIR/data/recordings" \
+         "$SCRIPT_DIR/data/uploads" \
+         "$SCRIPT_DIR/data/models" \
+         "$SCRIPT_DIR/data/hls"
 sudo mkdir -p /tmp/hls
 echo -e "${GREEN}✓ Data directories ready${NC}"
 
-# ── 6. Check video device ─────────────────────────────────────────────────────
-if [ ! -e /dev/video0 ]; then
-    echo -e "${YELLOW}WARNING: /dev/video0 not found — USB camera may not be connected${NC}"
+# ── 6. USB camera detection — update docker-compose.yml ──────────────────────
+echo ""
+echo "Checking for USB camera..."
+
+if [ ! -f "$COMPOSE_FILE" ]; then
+    echo -e "${RED}ERROR: docker-compose.yml not found at $COMPOSE_FILE${NC}"
+    exit 1
+fi
+
+if [ -e /dev/video0 ]; then
+    echo -e "${GREEN}✓ USB camera detected at /dev/video0${NC}"
+
+    # Uncomment devices block and device line if they are commented out
+    sed -i 's|#\s*devices:|    devices:|' "$COMPOSE_FILE"
+    sed -i 's|#\s*- /dev/video0:/dev/video0|      - /dev/video0:/dev/video0|' "$COMPOSE_FILE"
+
+    echo -e "${GREEN}✓ docker-compose.yml — USB camera enabled${NC}"
 else
-    echo -e "${GREEN}✓ /dev/video0 found${NC}"
+    echo -e ""
+    echo -e "${YELLOW}┌──────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${YELLOW}│  ⚠  No USB camera detected at /dev/video0                │${NC}"
+    echo -e "${YELLOW}│                                                          │${NC}"
+    echo -e "${YELLOW}│  USB camera features will be blocked in the dashboard.   │${NC}"
+    echo -e "${YELLOW}│                                                          │${NC}"
+    echo -e "${YELLOW}│  To enable USB camera access:                            │${NC}"
+    echo -e "${YELLOW}│    1. Plug in your USB camera                            │${NC}"
+    echo -e "${YELLOW}│    2. Run  ./start.sh  again                             │${NC}"
+    echo -e "${YELLOW}│                                                          │${NC}"
+    echo -e "${YELLOW}└──────────────────────────────────────────────────────────┘${NC}"
+    echo -e ""
+
+    # Comment out devices block and device line if they are active
+    sed -i 's|^\(\s*\)devices:|\1# devices:|' "$COMPOSE_FILE"
+    sed -i 's|^\(\s*\)- /dev/video0:/dev/video0|\1#- /dev/video0:/dev/video0|' "$COMPOSE_FILE"
+
+    echo -e "${YELLOW}  docker-compose.yml — USB device lines disabled${NC}"
 fi
 
 echo ""

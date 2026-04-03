@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WGtech AI Accelerator Starter Pack Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface2: #f1f5f9;
+    --border: #e2e8f0;
+    --accent: #0891b2;
+    --accent2: #7c3aed;
+    --accent3: #059669;
+    --warn: #d97706;
+    --danger: #dc2626;
+    --info: #2563eb;
+    --text: #0f172a;
+    --muted: #64748b;
+    --code-bg: #f8fafc;
+    --sidebar-w: 280px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .brand {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo h2 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .sidebar-logo .version {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    background: var(--accent2);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+
+  nav { padding: 16px 0; flex: 1; }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    line-height: 1.3;
+  }
+
+  nav a:hover { color: var(--text); background: var(--surface2); }
+  nav a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(8,145,178,0.08); }
+
+  nav .nav-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    min-width: 20px;
+    font-weight: 600;
+  }
+
+  nav .nav-divider {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 24px 6px;
+    opacity: 0.5;
+  }
+
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    max-width: 900px;
+    padding: 60px 56px 100px;
+  }
+
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -56px;
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse at top left, rgba(124,58,237,0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #0f172a;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .meta-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .meta-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .meta-card .value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 32px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent2);
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent2);
+  }
+
+  .section p {
+    color: #475569;
+    margin-bottom: 14px;
+    line-height: 1.75;
+  }
+
+  .section p strong { color: var(--text); }
+  .section p code, li code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 16px;
+    color: #475569;
+  }
+
+  ul li, ol li {
+    margin-bottom: 6px;
+    line-height: 1.7;
+  }
+
+  ul li strong, ol li strong { color: var(--text); }
+
+  .code-wrap {
+    margin: 16px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--code-bg);
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 16px;
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .code-lang::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: #3fb950;
+    border-radius: 50%;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--accent3); color: var(--accent3); }
+  .copy-btn svg { width: 13px; height: 13px; }
+
+  pre {
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  pre code {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
+    background: none !important;
+    border: none !important;
+    color: #1e293b !important;
+    padding: 0 !important;
+    line-height: 1.65;
+    white-space: pre;
+  }
+
+  .output-wrap {
+    margin: 12px 0 16px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(5,150,105,0.3);
+    background: rgba(5,150,105,0.05);
+  }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    background: rgba(5,150,105,0.1);
+    border-bottom: 1px solid rgba(5,150,105,0.2);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: #059669;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .output-wrap pre { padding: 14px 20px; }
+  .output-wrap pre code { color: #047857 !important; font-size: 12px !important; }
+
+  .callout {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-body strong { display: block; margin-bottom: 2px; }
+
+  .callout.warn { background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.3); color: #92400e; }
+  .callout.info { background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.3); color: #1e40af; }
+  .callout.tip  { background: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.3); color: #065f46; }
+  .callout.error{ background: rgba(220,38,38,0.08);  border: 1px solid rgba(220,38,38,0.3);  color: #991b1b; }
+  .callout.time { background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.3); color: #5b21b6; }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody td {
+    padding: 10px 16px;
+    color: #475569;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  tbody td:first-child { color: var(--text); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  tbody td strong { color: var(--text); }
+  tbody td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .step-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,255,0.06);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 8px;
+    padding: 6px 14px 6px 8px;
+    margin-bottom: 10px;
+  }
+
+  .step-pill .step-num {
+    background: var(--accent);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-pill .step-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .appendix {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+
+  .appendix h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .appendix h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .appendix h3::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 14px;
+  }
+
+  /* FAQ styles */
+  .faq-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+
+  .faq-section h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .faq-section .faq-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .faq-item:hover { border-color: rgba(8,145,178,0.4); }
+
+  .faq-item summary {
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-item summary:hover { background: var(--surface2); }
+
+  .faq-item[open] summary {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    color: var(--accent);
+  }
+
+  .faq-item summary .faq-arrow {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] summary .faq-arrow { transform: rotate(90deg); color: var(--accent); }
+
+  .faq-item summary .faq-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .faq-tag.setup { background: rgba(8,145,178,0.12); color: var(--accent); }
+  .faq-tag.docker { background: rgba(124,58,237,0.12); color: var(--accent2); }
+  .faq-tag.inference { background: rgba(5,150,105,0.12); color: var(--accent3); }
+  .faq-tag.hardware { background: rgba(217,119,6,0.12); color: var(--warn); }
+  .faq-tag.network { background: rgba(220,38,38,0.1); color: var(--danger); }
+
+  .faq-body {
+    padding: 16px 18px;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+  }
+
+  .faq-body p { margin-bottom: 10px; }
+  .faq-body p:last-child { margin-bottom: 0; }
+  .faq-body strong { color: var(--text); }
+  .faq-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(8,145,178,0.08);
+    border: 1px solid rgba(8,145,178,0.15);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .faq-body ol, .faq-body ul { padding-left: 20px; margin: 8px 0; }
+  .faq-body li { margin-bottom: 5px; }
+
+  .debug-section {
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface2);
+    overflow: hidden;
+  }
+
+  .debug-section summary {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: all 0.15s;
+  }
+
+  .debug-section summary::-webkit-details-marker { display: none; }
+
+  .debug-section summary:hover { background: var(--surface); color: var(--text); }
+  .debug-section[open] summary { border-bottom: 1px solid var(--border); color: var(--text); }
+
+  .debug-content {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #475569;
+  }
+
+  .debug-content p { margin-bottom: 12px; }
+  .debug-content p:last-child { margin-bottom: 0; }
+  .debug-content strong { color: var(--text); }
+  .debug-content ol { margin: 8px 0; padding-left: 20px; }
+  .debug-content li { margin-bottom: 6px; }
+  .debug-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(8,145,178,0.1);
+    border: 1px solid rgba(8,145,178,0.2);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 32px 20px 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">WGtech · AI Accelerator</div>
+    <h2>Starter Pack Setup Guide</h2>
+    <span class="version">v1.0 · ARM64</span>
+  </div>
+  <nav id="sidenav">
+    <div class="nav-divider">Setup</div>
+    <a href="#s1"><span class="nav-num">01</span>Hardware Requirements</a>
+    <a href="#s2"><span class="nav-num">02</span>Install Raspberry Pi OS</a>
+    <a href="#s3"><span class="nav-num">03</span>Opening the Terminal</a>
+    <a href="#s4"><span class="nav-num">04</span>System Update</a>
+    <div class="nav-divider">Configuration</div>
+    <a href="#s5"><span class="nav-num">05</span>Bootloader &amp; PCIe</a>
+    <a href="#s6"><span class="nav-num">06</span>Install Docker</a>
+    <a href="#s7"><span class="nav-num">07</span>Axelera Driver &amp; Runtime</a>
+    <div class="nav-divider">Deployment</div>
+    <a href="#s8"><span class="nav-num">08</span>Launch Docker Container</a>
+    <a href="#s9"><span class="nav-num">09</span>Install Voyager SDK</a>
+    <a href="#s10"><span class="nav-num">10</span>Run Inference</a>
+    <div class="nav-divider">Reference</div>
+    <a href="#appendix"><span class="nav-num">↗</span>Appendix &amp; Quick Reference</a>
+    <a href="#faq"><span class="nav-num">?</span>FAQ</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Starter Pack Setup Guide</div>
+    <h1>WGtech AI <span>Accelerator</span><br/>Starter Pack</h1>
+    <p>Complete end-to-end setup from flashing Raspberry Pi OS through running AI inference on the Axelera Metis accelerator. Follow each section in order — steps are interdependent.</p>
+    <div class="callout info" style="margin-bottom: 28px;">
+      <span class="callout-icon">⏱️</span>
+      <div class="callout-body"><strong>Estimated Time:</strong> 20–50 minutes to complete this guide (excluding download times, which depend on your internet speed)</div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="label">Product</div>
+        <div class="value">AI Starter Pack</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Platform</div>
+        <div class="value">Raspberry Pi 5</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Accelerator</div>
+        <div class="value">Axelera Metis AIPU</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2>Hardware Requirements</h2>
+    </div>
+    <p>The WGtech AI Accelerator Starter Pack comes as a complete unit. Additionally, you will need the following components:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>WGtech AI Accelerator Unit</td><td><strong>Raspberry Pi 5</strong> with pre-installed <strong>Axelera Metis M.2 PCIe card</strong> on PCIe HAT — supplied as one integrated unit</td></tr>
+          <tr><td>27W USB-C PSU (5V/5A)</td><td>Underpowered supplies cause random crashes and PCIe instability</td></tr>
+          <tr><td>microSD card 32GB+</td><td>Class 10 / A2 rated — faster cards improve boot and install times significantly</td></tr>
+          <tr><td>microSD card reader</td><td>Required to flash the OS from your desktop or laptop</td></tr>
+          <tr><td>HDMI display + cable</td><td>Pi 5 uses <strong>Micro-HDMI</strong> — standard HDMI cables will not fit</td></tr>
+          <tr><td>USB keyboard + mouse</td><td>Required for initial setup; can be removed after configuration</td></tr>
+          <tr><td>Ethernet or Wi-Fi</td><td>Ethernet is strongly preferred for reliability during large downloads</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div class="callout-body"><strong>Starter Pack Advantage</strong> The Raspberry Pi 5 and Axelera Metis card come pre-assembled and tested as a single unit. The Metis card is already properly seated in the M.2 slot with the PCIe HAT correctly stacked and secured — no physical assembly required.</div>
+    </div>
+    <details class="debug-section">
+      <summary>🔧 Debug: Physical Installation Notes</summary>
+      <div class="debug-content">
+        <p><strong>If the card is not being detected or you need to reseat it:</strong></p>
+        <p>The Axelera Metis card must be seated firmly in the M.2 (M-key) slot on the PCIe HAT. Ensure the HAT is properly stacked on the Pi 5's GPIO header and secured with standoffs. A loose connection will prevent the card from being detected by the OS.</p>
+        <p><strong>Steps to verify physical installation:</strong></p>
+        <ol>
+          <li>Power off the Pi completely and disconnect power</li>
+          <li>Check that the Metis card is fully inserted into the M.2 slot with the retention screw tightened</li>
+          <li>Verify the PCIe HAT is seated flush on all 40 GPIO pins</li>
+          <li>Ensure all standoffs are properly secured</li>
+          <li>Reconnect power and verify detection with <code>lspci | grep -i axelera</code></li>
+        </ol>
+      </div>
+    </details>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2>Installing Raspberry Pi OS</h2>
+    </div>
+    <p>Raspberry Pi Imager is the official tool for writing an OS image to your microSD card. It handles download, writing, and verification in one step. Install it on your <strong>desktop or laptop</strong> — not the Pi.</p>
+
+    <h3>Step 1 — Download Raspberry Pi Imager</h3>
+    <p>Download for your OS:</p>
+    <ul>
+      <li><strong>Windows:</strong> <code>imager_latest.exe</code> — https://downloads.raspberrypi.com/imager/imager_latest.exe</li>
+      <li><strong>macOS:</strong> <code>imager_latest.dmg</code> — https://downloads.raspberrypi.com/imager/imager_latest.dmg</li>
+      <li><strong>Linux:</strong> run <code>sudo apt install rpi-imager</code></li>
+    </ul>
+
+    <h3>Step 2 — Launch &amp; Select Device</h3>
+    <p>Open Imager. Click <strong>Choose Device</strong> → select <strong>Raspberry Pi 5</strong>.</p>
+
+    <h3>Step 3 — Select Operating System</h3>
+    <p>Click <strong>Choose OS</strong> → select <strong>Raspberry Pi OS (64-bit)</strong> from the recommended category.</p>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body">The 64-bit version is required — the Axelera SDK and Docker images are ARM64 only and will not function on the 32-bit OS. Do <strong>not</strong> select the Lite or Full variants.</div>
+    </div>
+
+    <h3>Step 4 — Select Storage</h3>
+    <p>Insert your microSD card. Click <strong>Choose Storage</strong> and select it from the list.</p>
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Critical:</strong> The write process will completely erase the selected device. Double-check you are not selecting an external drive or USB stick.</div>
+    </div>
+
+    <h3>Step 5 — OS Customisation</h3>
+    <p>Click <strong>Next</strong> → <strong>Edit Settings</strong> and configure:</p>
+    <ul>
+      <li><strong>Hostname:</strong> e.g. <code>rpi5-voyager</code></li>
+      <li><strong>Username &amp; password:</strong> used for all logins after boot</li>
+      <li><strong>Wi-Fi:</strong> enter SSID and password if not using Ethernet</li>
+      <li><strong>Locale:</strong> set timezone and keyboard layout</li>
+    </ul>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body">Skip the <strong>Services</strong> tab — SSH is not required for this setup.</div>
+    </div>
+
+    <h3>Step 6 — Write Image</h3>
+    <p>Click <strong>Write</strong> and confirm. The Imager will download (~1.1 GB), write, and verify the image. When complete, click <strong>Finish</strong> and safely eject the card.</p>
+    <p>Insert the microSD card into the underside slot of the Raspberry Pi 5, then connect all peripherals and power. On first boot the Pi will expand the filesystem and may reboot once — this takes 1–2 minutes and is normal.</p>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2>Opening the Terminal</h2>
+    </div>
+    <p>All subsequent steps require a terminal session on the Raspberry Pi. After booting into the desktop:</p>
+    <ul>
+      <li>Press <code>Ctrl + Alt + T</code></li>
+      <li>Or right-click the desktop → <strong>Open Terminal</strong></li>
+      <li>Or click the Terminal icon in the taskbar</li>
+    </ul>
+    <div class="callout info">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body"><strong>Scope reminder:</strong> All commands from this point through Section 7 are run <strong>directly on the Raspberry Pi host</strong> — not inside Docker. The container does not exist yet. From Section 8 onwards, commands switch to inside the container.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2>System Update</h2>
+    </div>
+    <p>Update the package list and upgrade all packages to their latest versions. This ensures the most recent kernel, firmware, and security patches are in place — all of which affect PCIe and driver stability.</p>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">bash</span>
+        <button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button>
+      </div>
+      <pre><code>sudo apt update && sudo apt full-upgrade -y</code></pre>
+    </div>
+    <p><strong>What each part does:</strong></p>
+    <ul>
+      <li><code>apt update</code> — refreshes the local package list from repositories</li>
+      <li><code>apt full-upgrade -y</code> — upgrades all packages including the kernel; <code>-y</code> auto-confirms</li>
+    </ul>
+    <div class="output-wrap">
+      <div class="output-header">Expected output</div>
+      <pre><code>0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</code></pre>
+    </div>
+    <div class="callout time">
+      <span class="callout-icon">⏱️</span>
+      <div class="callout-body">This may take 5–15 minutes. Do <strong>not reboot</strong> after — continue to the next section first.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2>Bootloader &amp; PCIe Configuration</h2>
+    </div>
+    <p>The Pi 5 uses an EEPROM-based bootloader updated separately from the OS. PCIe Gen3 must also be explicitly enabled for full Metis card bandwidth. These require two separate reboots.</p>
+
+    <h3>Part A — Update the Bootloader</h3>
+    <p>Launch the config tool:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo raspi-config</code></pre>
+    </div>
+    <p>Navigate using the arrow keys and Enter key:</p>
+    <ol>
+      <li>Select <strong>Advanced Options</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Select <strong>Bootloader Version</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Select <strong>Latest</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>When asked <em>"Reset boot ROM to defaults?"</em> — select <strong>&lt;No&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Esc</kbd> to return to the main menu</li>
+      <li>Use the <strong>Tab</strong> key to highlight <strong>&lt;Finish&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd> to exit raspi-config</li>
+    </ol>
+    <p>Apply the update and reboot:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo rpi-eeprom-update -a
+sudo reboot</code></pre>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body">If output shows <code>BOOTLOADER: up to date</code>, it's already current. Reboot is still required. Log back in and open a terminal after reboot.</div>
+    </div>
+
+    <h3>Part B — Enable PCIe Gen3</h3>
+    <p>Gen3 provides significantly higher bandwidth than the default Gen2 and is required for reliable Metis operation.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo raspi-config</code></pre>
+    </div>
+    <p>Navigate using the arrow keys and Enter key:</p>
+    <ol>
+      <li>Select <strong>Advanced Options</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Select <strong>PCIe Speed</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>When asked <em>"Would you like to enable PCIe Gen 3 mode?"</em> — select <strong>&lt;Yes&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Dismiss the confirmation dialog → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Esc</kbd> to return to the main menu</li>
+      <li>Tab to <strong>&lt;Finish&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>If asked <em>"Would you like to reboot now?"</em> — select <strong>&lt;No&gt;</strong> — we will reboot manually below</li>
+    </ol>
+    <p>Reboot to apply the PCIe Gen3 setting:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo reboot</code></pre>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2>Install Docker</h2>
+    </div>
+    <p>Docker isolates the Voyager SDK from the host OS, preventing library conflicts. Install Docker Engine via Docker's official Debian repository.</p>
+
+    <h3>Part A — Prerequisites &amp; GPG Key</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo apt update
+sudo apt install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc</code></pre>
+    </div>
+
+    <h3>Part B — Add Docker APT Repository</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF</code></pre>
+    </div>
+
+    <h3>Part C — Install Docker Engine</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo systemctl enable docker
+sudo systemctl start docker</code></pre>
+    </div>
+
+    <h3>Part D — Post-Install &amp; Reboot</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo usermod -aG docker $USER
+xhost +local:root
+xhost +local:docker
+sudo reboot</code></pre>
+    </div>
+    <p>After reboot, verify Docker is working:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>docker run hello-world</code></pre>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div class="callout-body">You should see a message starting with <strong>"Hello from Docker!"</strong> — Docker is correctly installed.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2>Install Axelera Metis Driver &amp; Runtime</h2>
+    </div>
+    <p>The Metis card requires a kernel driver (DKMS module) and runtime library. These must be installed on the <strong>host system</strong> — kernel modules cannot be loaded from inside a container.</p>
+
+    <h3>Part A — Add Axelera GPG Key</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://software.axelera.ai/artifactory/api/security/keypair/axelera/public \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/axelera.gpg
+sudo chmod a+r /etc/apt/keyrings/axelera.gpg</code></pre>
+    </div>
+
+    <h3>Part B — Add Axelera APT Repository</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo tee /etc/apt/sources.list.d/axelera.list &lt;&lt;EOF
+deb [signed-by=/etc/apt/keyrings/axelera.gpg] https://software.axelera.ai/artifactory/axelera-apt-source/ ubuntu24 main
+EOF</code></pre>
+    </div>
+
+    <h3>Part C — Install Driver &amp; Runtime</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo apt update
+sudo apt install -y metis-dkms axelera-multi-device axelera-device-1.5.3 \
+  axelera-runtime-1.5.3 axelera-riscv-gnu-newlib-toolchain-409b951ba662-7
+sudo reboot</code></pre>
+    </div>
+    <div class="callout time">
+      <span class="callout-icon">⏱️</span>
+      <div class="callout-body">DKMS will compile the kernel module during install — this takes 3–8 minutes on the Pi 5. Output will scroll; this is expected.</div>
+    </div>
+
+    <h3>Part D — Verify Driver Installation</h3>
+    <p>After rebooting, open a terminal and run these verification commands one by one:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code># Load the module — no output means success
+sudo modprobe metis
+
+# Confirm it is active
+lsmod | grep metis
+
+# Check DKMS build status
+dkms status
+
+# Confirm card is visible on the PCIe bus
+lspci | grep -i axelera</code></pre>
+    </div>
+    <div class="output-wrap">
+      <div class="output-header">Expected output</div>
+      <pre><code>metis                  65536  0
+metis/1.5.3, 6.x.x-rpi-v8+, aarch64: installed
+0001:01:00.0 Processing accelerators: Axelera AI Metis AI Processing Unit
+access control disabled, clients can connect from any host
+:0</code></pre>
+    </div>
+    <div class="callout error">
+      <span class="callout-icon">❌</span>
+      <div class="callout-body"><strong>lspci shows nothing:</strong> Card not detected. Re-seat the M.2 card, verify HAT connections, and confirm PCIe Gen3 was enabled in Section 5.</div>
+    </div>
+    <div class="callout error">
+      <span class="callout-icon">❌</span>
+      <div class="callout-body"><strong>dkms status shows "failed":</strong> Module compile error. Run <code>sudo dkms autoinstall</code> to retry and review the output. Ensure kernel headers are installed.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">§ 08</span>
+      <h2>Launch Voyager SDK Docker Container</h2>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Required before every Docker launch:</strong> After each reboot, you must run these two commands on the host before starting or entering the container — otherwise display output and inference visualisation will fail.
+        <div style="margin-top: 10px;">
+          <code>xhost +local:root</code><br/>
+          <code>xhost +local:docker</code>
+        </div>
+      </div>
+    </div>
+
+    <p>Run the xhost commands first, then launch the container:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host — run after every reboot</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>xhost +local:root
+xhost +local:docker</code></pre>
+    </div>
+
+    <p>Then launch an Ubuntu 22.04 container with privileged access to the host's devices and kernel modules so it can communicate with the Metis card:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host — first time only</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>docker run -it --privileged \
+  -v /tmp:/tmp \
+  -v /lib/modules:/lib/modules \
+  -v /run:/run \
+  --device=/dev/dri \
+  --device=/dev/vchiq \
+  --group-add video \
+  -e DISPLAY=$DISPLAY \
+  --network=host \
+  --name=voyager-sdk \
+  ubuntu:22.04</code></pre>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Flag</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>-it</td><td>Interactive TTY — keeps the terminal session open inside the container</td></tr>
+          <tr><td>--privileged</td><td>Full access to host devices and kernel capabilities; required for PCIe device access</td></tr>
+          <tr><td>-v /lib/modules</td><td>Shares host kernel modules so the runtime can use the already-loaded <code>metis</code> driver</td></tr>
+          <tr><td>-v /tmp, /run</td><td>Shared temporary files and runtime sockets (udev) between host and container</td></tr>
+          <tr><td>--device /dev/dri</td><td>Passes through Direct Rendering Infrastructure for GPU/display access</td></tr>
+          <tr><td>--device /dev/vchiq</td><td>Passes through VideoCore hardware interface for Raspberry Pi GPU communication</td></tr>
+          <tr><td>--network=host</td><td>Container shares the Pi's network stack and IP address directly</td></tr>
+          <tr><td>--name=voyager-sdk</td><td>Names the container for easy reference in <code>docker start</code> / <code>docker exec</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>After the command runs, the terminal prompt changes to:</p>
+    <div class="output-wrap">
+      <div class="output-header">Container prompt</div>
+      <pre><code>root@&lt;container-id&gt;:/#</code></pre>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body">You are now <strong>inside the Docker container</strong>. All commands from this point forward are run inside the container. To re-enter after a reboot, see the <a href="#appendix" style="color:var(--accent3)">Appendix</a>.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 9 -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">§ 09</span>
+      <h2>Install Voyager SDK Inside the Container</h2>
+    </div>
+    <p>Clone and install the Voyager SDK. The <code>install.sh</code> script handles all Python dependencies, model tools, and runtime bindings.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>apt update && apt install -y sudo git pciutils curl lsb-release && update-pciids
+cd /home
+git clone https://github.com/axelera-ai-hub/voyager-sdk.git
+cd voyager-sdk
+./install.sh --YES --all --media</code></pre>
+    </div>
+    <ul>
+      <li><code>apt update && apt install ...</code> — installs required packages: sudo, git, pciutils, curl, and updates PCI ID database</li>
+      <li><code>cd /home</code> — navigates to a stable location that persists for the container's lifetime</li>
+      <li><code>git clone ...</code> — downloads the full SDK including inference scripts, model configs, and example media</li>
+      <li><code>--YES</code> — auto-accepts all prompts; <code>--all</code> installs everything including the Python venv, runtime bindings, and model utilities; <code>--media</code> downloads example media files for testing</li>
+    </ul>
+    <div class="callout time">
+      <span class="callout-icon">⏱️</span>
+      <div class="callout-body">Installation takes <strong>10–30 minutes</strong> depending on internet speed. Extensive pip output is expected — this is normal.</div>
+    </div>
+    <div class="callout error">
+      <span class="callout-icon">❌</span>
+      <div class="callout-body"><strong>If git clone fails:</strong> Run <code>curl https://github.com</code> to test connectivity. If it fails, the container was started without <code>--network=host</code>. Exit, run <code>docker rm voyager-sdk</code>, and redo Section 8.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">§ 10</span>
+      <h2>Run Inference</h2>
+    </div>
+    <p>With the SDK installed, run AI inference on the Axelera Metis accelerator. Follow these steps in order.</p>
+
+    <h3>Step 1 — Activate the Virtual Environment</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>source venv/bin/activate</code></pre>
+    </div>
+    <p>Your prompt will change to show <code>(venv)</code> at the start. Re-run this each time you start a new container session.</p>
+
+    <h3>Step 2 — Verify the Accelerator is Detected</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>axdevice</code></pre>
+    </div>
+    <div class="output-wrap">
+      <div class="output-header">Expected output</div>
+      <pre><code>Axelera Metis Device 0
+  PCI address : 0001:01:00.0
+  Status      : Ready
+  Firmware    : v1.5.x</code></pre>
+    </div>
+
+    <h3>Step 3 — Explore Options (Optional)</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>./inference.py --help</code></pre>
+    </div>
+
+    <h3>Step 4 — Run a Test Inference</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4</code></pre>
+    </div>
+    <p>This runs <strong>YOLOv5s</strong> object detection (COCO dataset, 80 classes) on the bundled 1080p traffic video, drawing bounding boxes and printing real-time FPS.</p>
+    <div class="output-wrap">
+      <div class="output-header">Expected output</div>
+      <pre><code>Loading model: yolov5s-v7-coco
+Compiling for Metis AIPU...
+Running inference on: media/traffic1_1080p.mp4
+FPS: 45.3  |  Frame: 120/600  |  Objects detected: 8
+FPS: 46.1  |  Frame: 240/600  |  Objects detected: 5
+...
+Inference complete. Average FPS: 45.7</code></pre>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div class="callout-body"><strong>Success:</strong> FPS is displayed and incrementing — the Metis card is offloading and accelerating inference. Expected range is 30–60+ FPS for YOLOv5s at 1080p. Lower FPS may indicate thermal throttling — check <code>vcgencmd measure_temp</code>.</div>
+    </div>
+
+    <h3>Step 5 — If Inference Fails: Reboot Recovery</h3>
+    <p>If inference crashes, hangs, or <code>axdevice</code> returns no devices after a previously working session, the AIPU may be in a bad state. A full reboot sequence clears this reliably.</p>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Exit the container before rebooting</strong> — type <code>exit</code> in the container shell to return to the host, then proceed with the steps below.</div>
+    </div>
+
+    <p><strong>On the host — reboot and restore:</strong></p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code># Step 1 — Reboot the Pi
+sudo reboot</code></pre>
+    </div>
+    <p>After the Pi comes back up, open a terminal and run:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host — after reboot</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code># Step 2 — Reload the kernel module
+sudo modprobe metis
+
+# Step 3 — Grant display access (required every boot)
+xhost +local:root
+xhost +local:docker
+
+# Step 4 — Restart the container
+docker start voyager-sdk
+
+# Step 5 — Re-enter the container
+docker exec -it voyager-sdk bash</code></pre>
+    </div>
+    <p><strong>Inside the container — resume inference:</strong></p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · container</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>cd /home/voyager-sdk
+source venv/bin/activate
+axdevice  # verify card is ready
+./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4</code></pre>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body">If <code>axdevice</code> still shows no device after a reboot, run <code>lspci | grep -i axelera</code> on the host to confirm the card is visible at the PCIe level. If it is not, power-cycle the Pi fully (not just reboot) and re-check physical connections.</div>
+    </div>
+  </section>
+
+  <hr/>
+
+  <!-- APPENDIX -->
+  <div class="appendix" id="appendix">
+    <h2>📎 Appendix &amp; Quick Reference</h2>
+
+    <h3>Every Boot Checklist</h3>
+    <p style="color:#475569; font-size:14px; margin-bottom:12px;">After any Pi reboot, always run these steps on the <strong>host</strong> before entering the container:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host — every boot</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code># 1. Reload the AIPU kernel module
+sudo modprobe metis
+
+# 2. Grant display access to Docker
+xhost +local:root
+xhost +local:docker
+
+# 3. Start the container
+docker start voyager-sdk
+
+# 4. Enter the container
+docker exec -it voyager-sdk bash</code></pre>
+    </div>
+    <p style="color:#475569; font-size:13px; margin-bottom:4px; margin-top:16px;">Then inside the container:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · container</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>cd /home/voyager-sdk
+source venv/bin/activate</code></pre>
+    </div>
+
+    <h3>Re-entering the Container After a Reboot</h3>
+    <p style="color:#475569; font-size:14px; margin-bottom:12px;">After a Pi reboot, the container will be stopped. Use these steps to get back in:</p>
+
+    <p style="color:#475569; font-size:13px; margin-bottom:4px;"><strong style="color:#0f172a;">Step 1 —</strong> Load the kernel module on the host:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo modprobe metis</code></pre>
+    </div>
+
+    <p style="color:#475569; font-size:13px; margin-bottom:4px;"><strong style="color:#0f172a;">Step 2 —</strong> Grant display access (required every boot):</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>xhost +local:root
+xhost +local:docker</code></pre>
+    </div>
+
+    <p style="color:#475569; font-size:13px; margin-bottom:4px;"><strong style="color:#0f172a;">Step 3 —</strong> Start the stopped container:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>docker start voyager-sdk</code></pre>
+    </div>
+
+    <p style="color:#475569; font-size:13px; margin-bottom:4px;"><strong style="color:#0f172a;">Step 4 —</strong> Attach an interactive shell into the running container:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · host</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>docker exec -it voyager-sdk bash</code></pre>
+    </div>
+
+    <p style="color:#475569; font-size:13px; margin-bottom:4px;"><strong style="color:#0f172a;">Step 5 —</strong> Inside the container, re-activate the environment:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · container</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>cd /home/voyager-sdk
+source venv/bin/activate</code></pre>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-body"><code>docker start</code> brings the container back from stopped state. <code>docker exec -it ... bash</code> opens a new interactive shell inside it. This is different from the original <code>docker run</code> — that command only works the first time to <em>create</em> the container.</div>
+    </div>
+
+    <h3>Useful Docker Commands</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code># List all containers (running and stopped)
+docker ps -a
+
+# View container logs
+docker logs voyager-sdk
+
+# Remove the container entirely to start fresh
+docker rm voyager-sdk</code></pre>
+    </div>
+
+    <h3>Common Errors &amp; Fixes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>lspci shows no Axelera device</td>
+            <td>Card not seated / PCIe Gen3 not enabled</td>
+            <td>Re-seat card; re-run Section 5 PCIe step</td>
+          </tr>
+          <tr>
+            <td>dkms status shows "failed"</td>
+            <td>Kernel headers missing or version mismatch</td>
+            <td><code>sudo apt install --reinstall metis-dkms</code></td>
+          </tr>
+          <tr>
+            <td>axdevice shows no devices</td>
+            <td>Missing --privileged or kernel module not mounted</td>
+            <td>Recreate container with correct flags from Section 8</td>
+          </tr>
+          <tr>
+            <td>docker: permission denied</td>
+            <td>User not in docker group</td>
+            <td><code>sudo usermod -aG docker $USER</code> then reboot</td>
+          </tr>
+          <tr>
+            <td>Low inference FPS</td>
+            <td>Thermal throttling</td>
+            <td>Improve Pi cooling; check <code>vcgencmd measure_temp</code></td>
+          </tr>
+          <tr>
+            <td>git clone fails in container</td>
+            <td>No internet access in container</td>
+            <td>Ensure <code>--network=host</code> was used in docker run</td>
+          </tr>
+          <tr>
+            <td>Display or video window won't open</td>
+            <td>xhost permissions not set this session</td>
+            <td>Run <code>xhost +local:root</code> and <code>xhost +local:docker</code> on host, then re-enter container</td>
+          </tr>
+          <tr>
+            <td>Inference hangs or crashes mid-run</td>
+            <td>AIPU in bad state / driver desync</td>
+            <td>Exit container, reboot Pi, follow Section 10 Step 5 recovery</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section" id="faq">
+    <h2>❓ Frequently Asked Questions</h2>
+    <p class="faq-subtitle">Common questions from first-time setup and everyday use.</p>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag setup">Setup</span>
+        Do I need to run xhost commands every time I reboot?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>Yes. <code>xhost +local:root</code> and <code>xhost +local:docker</code> are not persistent — they reset on every reboot. You must run both on the host before starting or entering the container, or the inference visualisation window will fail to open.</p>
+        <p>A quick way to remember: treat them as part of your startup sequence alongside <code>sudo modprobe metis</code> and <code>docker start voyager-sdk</code>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag docker">Docker</span>
+        What happens if I accidentally use <code>docker run</code> again instead of <code>docker start</code>?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p><code>docker run</code> tries to create a <em>new</em> container. Because a container named <code>voyager-sdk</code> already exists, Docker will throw an error: <code>Conflict. The container name "/voyager-sdk" is already in use</code>.</p>
+        <p>This is harmless — your existing container and all installed SDK files are untouched. Simply use <code>docker start voyager-sdk</code> and then <code>docker exec -it voyager-sdk bash</code> to get back in as normal.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag inference">Inference</span>
+        Inference worked before but now <code>axdevice</code> shows no devices — what happened?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>This usually means the kernel module was not reloaded after a reboot, or the AIPU entered a fault state. Fix it with the reboot recovery sequence in Section 10 Step 5:</p>
+        <ol>
+          <li>Exit the container: <code>exit</code></li>
+          <li>On the host: <code>sudo reboot</code></li>
+          <li>After reboot: <code>sudo modprobe metis</code>, then <code>xhost +local:root</code> and <code>xhost +local:docker</code></li>
+          <li>Restart and re-enter the container, then check <code>axdevice</code> again</li>
+        </ol>
+        <p>If the card still doesn't appear, verify it's visible at the PCIe level: <code>lspci | grep -i axelera</code> on the host. If nothing shows there, power-cycle the Pi fully.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag hardware">Hardware</span>
+        The Pi crashes or reboots randomly during inference — what's wrong?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p><strong>Most likely cause: insufficient power.</strong> The Metis AIPU draws significant additional power via PCIe. A standard 15W (5V/3A) supply is not enough. You must use a <strong>27W (5V/5A) USB-C PSU</strong> — this is listed as a requirement in Section 1.</p>
+        <p>Secondary causes to check:</p>
+        <ul>
+          <li>Thermal throttling or shutdown — check <code>vcgencmd measure_temp</code>. Over 80°C is concerning.</li>
+          <li>Poor quality or slow microSD card causing filesystem errors under load</li>
+          <li>Loose M.2 card or HAT connection — re-seat the card with the Pi powered off</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag inference">Inference</span>
+        FPS is much lower than the expected 30–60+ — how do I diagnose this?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>Run these checks in order:</p>
+        <ol>
+          <li><strong>Temperature:</strong> <code>vcgencmd measure_temp</code> on the host. If over 80°C the Pi is throttling. Improve cooling.</li>
+          <li><strong>PCIe speed:</strong> Confirm Gen3 is active — <code>sudo cat /sys/bus/pci/devices/0001:01:00.0/current_link_speed</code> should show <code>8.0 GT/s PCIe</code>. If it shows Gen1 or Gen2, re-run Section 5.</li>
+          <li><strong>Card status:</strong> <code>axdevice</code> should show <code>Status: Ready</code>. Any other status means the card needs a reboot recovery.</li>
+          <li><strong>CPU load:</strong> Run <code>htop</code> on the host in a separate terminal. High CPU usage unrelated to inference can compete for shared resources.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag docker">Docker</span>
+        Will reinstalling Docker or removing the container delete my SDK installation?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>Yes — <strong>running <code>docker rm voyager-sdk</code> will permanently delete the container</strong>, including the Voyager SDK cloned and installed inside it at <code>/home/voyager-sdk</code>. You would need to repeat Section 9 from scratch.</p>
+        <p>Only do this if you need a completely clean slate. For most problems (bad state, display issues, inference failures) a reboot and container restart — without removing the container — is sufficient.</p>
+        <p>Uninstalling Docker from the host does not immediately delete stopped containers, but removing Docker's storage directory will. Treat the container as your persistent SDK environment and avoid unnecessary removal.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag network">Network</span>
+        Can I SSH into the Pi instead of using a keyboard and monitor?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>Yes, with limitations. SSH works fine for all command-line steps. However, inference visualisation requires a display — the inference window renders via X11 directly to the screen. If you're running headless over SSH, you won't see the output window unless you set up X11 forwarding (<code>ssh -X</code>) to a machine with a display server.</p>
+        <p>To enable SSH: in Raspberry Pi Imager's OS customisation (Section 2, Step 5), go to the <strong>Services</strong> tab and enable SSH. You can then connect via <code>ssh username@hostname.local</code>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag setup">Setup</span>
+        How do I check how much disk space is left on the Pi?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>Run <code>df -h /</code> on the host to see filesystem usage. The Voyager SDK installation (including models and media) takes 3–6 GB. If you're running low on space, check for large log files or unused Docker images:</p>
+        <ul>
+          <li><code>docker images</code> — lists downloaded images</li>
+          <li><code>docker image prune</code> — removes unused images to reclaim space</li>
+          <li><code>du -sh /home/voyager-sdk</code> — shows SDK directory size inside the container</li>
+        </ul>
+        <p>A 32 GB microSD card is the minimum recommended; 64 GB gives more comfortable headroom.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>
+        <span class="faq-tag hardware">Hardware</span>
+        The guide says 20–50 minutes — what takes the longest?
+        <span class="faq-arrow">▶</span>
+      </summary>
+      <div class="faq-body">
+        <p>The main time sinks are all download and compile operations:</p>
+        <ul>
+          <li><strong>Section 4</strong> (system update): 5–15 min depending on how many packages need upgrading</li>
+          <li><strong>Section 7</strong> (DKMS kernel module compile): 3–8 min — this is CPU-bound and cannot be sped up</li>
+          <li><strong>Section 9</strong> (Voyager SDK install): 10–30 min — almost entirely internet speed dependent</li>
+        </ul>
+        <p>On a fast connection (100 Mbps+) with a modern microSD, the full process is typically done in around 25–30 minutes. On a slower connection or congested network it can stretch to 50 minutes.</p>
+      </div>
+    </details>
+
+  </div>
+
+</main>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy';
+      }, 2000);
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector('nav a[href="#' + entry.target.id + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+
   frontend:
     image: wgtechsolutions/dashboard-frontend:latest
     container_name: dashboard-frontend
@@ -25,8 +26,10 @@ services:
       - /tmp/hls:/tmp/hls
     env_file:
       - .env
-    devices:
-      - /dev/video0:/dev/video0
+    # devices block is managed automatically by setup.sh
+    # do not edit manually — it will be overwritten on each start
+    # devices:
+    #   - /dev/video0:/dev/video0
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]

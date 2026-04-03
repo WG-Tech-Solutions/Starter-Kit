@@ -13,8 +13,8 @@ NC='\033[0m'
 CONTAINER="voyager-sdk"
 DEST="/home/voyager-sdk"
 VENV="$DEST/venv"
-SERVICE_DIR="$(dirname "$0")/voyager-service"
-NETWORK="app-net"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SERVICE_DIR="$SCRIPT_DIR/voyager-service"
 LOG_DIR="/tmp"
 MEDIAMTX_LOG="$LOG_DIR/mediamtx.log"
 
@@ -24,7 +24,7 @@ echo -e "${CYAN}=== Starting Voyager SDK ===${NC}"
 ulimit -c 0
 sudo sysctl -w kernel.core_pattern=/dev/null > /dev/null 2>&1 || true
 
-# ── 2. Start MediaMTX ────────────────────────────────────────────────────────
+# ── 2. Start MediaMTX ─────────────────────────────────────────────────────────
 echo "Starting MediaMTX..."
 pkill -f mediamtx 2>/dev/null || true
 sleep 1
@@ -39,22 +39,23 @@ else
     exit 1
 fi
 
-# ── 3. Check voyager-sdk container exists ────────────────────────────────────
+# ── 3. Check voyager-sdk container exists ─────────────────────────────────────
 echo "Checking voyager-sdk container..."
 if ! docker inspect "$CONTAINER" > /dev/null 2>&1; then
     echo -e "${RED}ERROR: Container '$CONTAINER' not found.${NC}"
-    echo "  Make sure the voyager-sdk container was created during initial setup."
+    echo "  The voyager-sdk container must be created before running this script."
+    echo "  Please complete the AI Starter Pack setup guide first."
     exit 1
 fi
 echo -e "${GREEN}✓ Container found${NC}"
 
-# ── 4. Start container ───────────────────────────────────────────────────────
+# ── 4. Start container ────────────────────────────────────────────────────────
 echo "Starting $CONTAINER..."
 docker start "$CONTAINER"
 sleep 2
 echo -e "${GREEN}✓ Container started${NC}"
 
-# ── 5. Copy service files ────────────────────────────────────────────────────
+# ── 5. Copy service files ─────────────────────────────────────────────────────
 echo "Copying voyager-service files..."
 for f in ai_server.py ai_inference.py wginference.py; do
     if [ ! -f "$SERVICE_DIR/$f" ]; then
@@ -66,37 +67,31 @@ for f in ai_server.py ai_inference.py wginference.py; do
 done
 echo -e "${GREEN}✓ Service files copied${NC}"
 
-# ── 6. Install system dependencies ──────────────────────────────────────────
+# ── 6. Install system dependencies ───────────────────────────────────────────
 echo "Checking system dependencies..."
 docker exec -u root "$CONTAINER" bash -c "
     which ffmpeg > /dev/null 2>&1 || (apt-get update -qq && apt-get install -y -q ffmpeg)
     which pgrep  > /dev/null 2>&1 || (apt-get install -y -q procps)
 " && echo -e "${GREEN}✓ System deps ok${NC}"
 
-# ── 7. Install Python dependencies ──────────────────────────────────────────
+# ── 7. Install Python dependencies ───────────────────────────────────────────
 echo "Installing Python dependencies..."
 docker exec "$CONTAINER" bash -c "
     source $VENV/bin/activate &&
     pip install --quiet fastapi uvicorn httpx pyyaml psutil
 " && echo -e "${GREEN}✓ Python deps ok${NC}"
 
-# ── 8. Connect to app network ────────────────────────────────────────────────
-echo "Connecting to network: $NETWORK..."
-docker network connect "$NETWORK" "$CONTAINER" 2>/dev/null && \
-    echo -e "${GREEN}✓ Connected to $NETWORK${NC}" || \
-    echo "  (already connected or using host network — skipping)"
-
-# ── 9. Kill stale processes + free AIPU cores ────────────────────────────────
+# ── 8. Kill stale processes and free AIPU cores ───────────────────────────────
 echo "Clearing stale processes and freeing AIPU..."
 docker exec "$CONTAINER" bash -c "
-    pkill -9 -f ai_server.py        2>/dev/null || true
-    pkill -9 -f 'python3.*inference' 2>/dev/null || true
-    pkill -9 -f wginference          2>/dev/null || true
+    pkill -9 -f ai_server.py         2>/dev/null || true
+    pkill -9 -f 'python3.*inference'  2>/dev/null || true
+    pkill -9 -f wginference           2>/dev/null || true
     sleep 2
 " 2>/dev/null || true
 echo -e "${GREEN}✓ Processes cleared${NC}"
 
-# ── 10. Set up HLS directories ───────────────────────────────────────────────
+# ── 9. Set up HLS directories ─────────────────────────────────────────────────
 echo "Setting up HLS directories..."
 sudo mkdir -p /tmp/hls
 for slot in 2 3 4 5; do
@@ -107,26 +102,34 @@ docker exec "$CONTAINER" bash -c "
 "
 echo -e "${GREEN}✓ HLS dirs ready${NC}"
 
-# ── 11. Detect voyager-sdk IP and update .env ────────────────────────────────
+# ── 10. Detect voyager-sdk IP via docker exec ip addr ────────────────────────
 echo "Detecting voyager-sdk IP..."
-VOYAGER_IP=$(docker exec "$CONTAINER" hostname -I 2>/dev/null | awk '{print $1}')
 
-if [ -n "$VOYAGER_IP" ]; then
-    echo -e "${GREEN}✓ voyager-sdk IP: $VOYAGER_IP${NC}"
-    # Update VOYAGER_SDK_URL in .env if it exists
-    ENV_FILE="$(dirname "$0")/.env"
-    if [ -f "$ENV_FILE" ]; then
-        # Replace the existing VOYAGER_SDK_URL line
-        sed -i "s|^VOYAGER_SDK_URL=.*|VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001|" "$ENV_FILE"
-        echo -e "${GREEN}✓ Updated .env VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001${NC}"
-    else
-        echo -e "${YELLOW}  .env not found — skipping URL update${NC}"
-    fi
-else
-    echo -e "${YELLOW}WARNING: Could not detect IP — keeping existing .env value${NC}"
+VOYAGER_IP=$(docker exec "$CONTAINER" ip addr show \
+    | grep 'inet ' \
+    | grep -v '127.0.0.1' \
+    | awk '{print $2}' \
+    | cut -d/ -f1 \
+    | head -1)
+
+# Fallback to Pi LAN IP if exec parse failed
+if [ -z "$VOYAGER_IP" ]; then
+    echo -e "${YELLOW}WARNING: Could not parse IP from container — using Pi LAN IP${NC}"
+    VOYAGER_IP=$(hostname -I | awk '{print $1}')
 fi
 
-# ── 12. Start ai_server.py ───────────────────────────────────────────────────
+echo -e "${GREEN}✓ voyager-sdk IP: $VOYAGER_IP${NC}"
+
+# Update VOYAGER_SDK_URL in .env
+ENV_FILE="$SCRIPT_DIR/.env"
+if [ -f "$ENV_FILE" ]; then
+    sed -i "s|^VOYAGER_SDK_URL=.*|VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001|" "$ENV_FILE"
+    echo -e "${GREEN}✓ .env updated — VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001${NC}"
+else
+    echo -e "${YELLOW}  .env not found — skipping URL update (setup.sh will create it)${NC}"
+fi
+
+# ── 11. Start ai_server.py ────────────────────────────────────────────────────
 echo "Starting ai_server.py..."
 docker exec "$CONTAINER" bash -c "
     source $VENV/bin/activate
@@ -139,21 +142,20 @@ docker exec "$CONTAINER" bash -c "
 "
 sleep 3
 
-# ── 13. Verify ───────────────────────────────────────────────────────────────
+# ── 12. Verify ────────────────────────────────────────────────────────────────
 echo "Verifying voyager-sdk health..."
 if docker exec "$CONTAINER" curl -sf http://localhost:8001/health > /dev/null; then
     echo -e "${GREEN}✓ voyager-sdk is UP at http://localhost:8001${NC}"
 else
-    echo -e "${RED}FAILED. Logs:${NC}"
-    docker exec "$CONTAINER" cat /tmp/ai_server.log 2>/dev/null || echo "no log file"
+    echo -e "${RED}FAILED. Last 20 lines of log:${NC}"
+    docker exec "$CONTAINER" tail -20 /tmp/ai_server.log 2>/dev/null || echo "no log file"
     exit 1
 fi
 
-# ── Done ─────────────────────────────────────────────────────────────────────
+# ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
-echo -e "${GREEN}=== All services running ===${NC}"
-echo -e "  Dashboard:      ${CYAN}http://localhost${NC}"
-echo -e "  Voyager logs:   docker exec $CONTAINER tail -f /tmp/ai_server.log"
-echo -e "  MediaMTX logs:  tail -f $MEDIAMTX_LOG"
-echo -e "  Stop voyager:   docker exec $CONTAINER pkill -f ai_server.py"
-echo -e "  Restart:        bash $(basename "$0")"
+echo -e "${GREEN}=== Voyager SDK running ===${NC}"
+echo -e "  Voyager logs:  docker exec $CONTAINER tail -f /tmp/ai_server.log"
+echo -e "  MediaMTX logs: tail -f $MEDIAMTX_LOG"
+echo -e "  Stop voyager:  docker exec $CONTAINER pkill -f ai_server.py"
+echo -e "  Restart:       bash $(basename "$0")"
