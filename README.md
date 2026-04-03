@@ -1,21 +1,75 @@
 # WGtech AI Starter Pack — Dashboard
 
-> **Before continuing:** You must have completed the full **AI Starter Pack Setup Guide** (the HTML guide included in your kit) before running anything here. This README picks up exactly where that guide ends — after the Voyager SDK is installed and inference is confirmed working inside the `voyager-sdk` container.
+---
+
+## ⚠️ Start here — read before touching anything
+
+**This repo contains two things:**
+
+| File | What it is | Do this first |
+|---|---|---|
+| `aistarterpack.html` | Hardware setup guide | **Yes — complete this first** |
+| Everything else | Dashboard scripts | Only after the guide is done |
+
+**Open `aistarterpack.html` in a browser on your desktop or laptop:**
+
+```
+Right-click aistarterpack.html → Open with → your browser
+```
+
+That guide takes you from a blank microSD card all the way through flashing Raspberry Pi OS, installing the Axelera Metis driver, setting up Docker, and confirming AI inference is working on the AIPU. It takes 20–50 minutes.
+
+**Come back to this README only after you have:**
+1. Completed every section of `aistarterpack.html` (Sections 1–10)
+2. Confirmed inference is running — you saw FPS output from `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the `voyager-sdk` container
+
+If you skip the HTML guide and run these scripts first, they will fail — the `voyager-sdk` container and Axelera driver that these scripts depend on will not exist yet.
 
 ---
 
-## Prerequisites checklist
+## Prerequisites — verify these before running start.sh
 
-Work through this before touching any script. Every item must be true.
+Once you have finished `aistarterpack.html`, confirm each of the following. If any fail, go back to the relevant section in the HTML guide.
 
-- [ ] Raspberry Pi OS (64-bit) is installed and fully updated
-- [ ] PCIe Gen3 is enabled via `raspi-config`
-- [ ] Docker is installed and `docker run hello-world` works
-- [ ] Axelera Metis driver is installed — `dkms status` shows `installed`
-- [ ] `voyager-sdk` container exists — `docker ps -a` shows it
-- [ ] Inference works — you ran `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the container and saw FPS output
+**1. OS is up to date**
+```bash
+cat /etc/os-release | grep PRETTY
+```
+Should show Raspberry Pi OS (Debian) — 64-bit.
 
-If any item above is not checked, **stop here** and complete the AI Starter Pack Setup Guide first.
+**2. PCIe Gen3 is enabled**
+```bash
+sudo cat /sys/bus/pci/devices/0001:01:00.0/current_link_speed
+```
+Should show `8.0 GT/s PCIe`. If not, re-run Section 5 of the HTML guide.
+
+**3. Docker is working**
+```bash
+docker run hello-world
+```
+Should print `Hello from Docker!`.
+
+**4. Axelera driver is installed**
+```bash
+dkms status
+lspci | grep -i axelera
+```
+`dkms status` should show `metis/1.5.3 ... installed`. `lspci` should show the Metis card.
+
+**5. voyager-sdk container exists**
+```bash
+docker ps -a | grep voyager-sdk
+```
+Should show the container (status can be Exited — that is fine).
+
+**6. Inference was confirmed working**
+
+You should have already run this inside the container and seen FPS output:
+```bash
+./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4
+```
+
+If all six pass, continue to the next section.
 
 ---
 
@@ -277,43 +331,3 @@ Also check the camera isn't locked by another process on the host:
 ```bash
 fuser /dev/video0
 ```
-
----
-
-## What each script does (summary)
-
-| Script | When to run | What it does |
-|---|---|---|
-| `start.sh` | Every boot, or to restart | Runs `start_voyager.sh` → `setup.sh` → `docker compose up` in order |
-| `start_voyager.sh` | Called by `start.sh` | Starts MediaMTX, starts `voyager-sdk` container, copies service files, detects IP, starts `ai_server.py` |
-| `setup.sh` | Called by `start.sh` | Installs MediaMTX if missing, creates/updates `.env`, creates data dirs, detects USB camera and updates `docker-compose.yml` |
-
----
-
-## Architecture overview
-
-```
-┌─────────────────── Raspberry Pi 5 Host ───────────────────────┐
-│                                                                │
-│  MediaMTX (host process)                                       │
-│  RTSP :8554  ─────────────────────────────────────────┐       │
-│  HLS  :8888  ─────────────────────────────────────────┤       │
-│                                                        │       │
-│  ┌─────────────── voyager-sdk (--network=host) ──────┐ │       │
-│  │  ai_server.py  :8001                              │ │       │
-│  │  Axelera Metis AIPU (PCIe)                        │ │       │
-│  │  FFmpeg → RTSP push ──────────────────────────────┼─┘       │
-│  └───────────────────────────────────────────────────┘         │
-│                                                                │
-│  ┌─────────── app-net (Docker bridge) ───────────────┐         │
-│  │                                                   │         │
-│  │  dashboard-backend  :8000  ←── .env VOYAGER_URL   │         │
-│  │  dashboard-frontend :80                           │         │
-│  └───────────────────────────────────────────────────┘         │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
-                           ↑
-                    Browser: http://localhost
-```
-
-The backend reaches the voyager-sdk via the Pi's LAN IP (detected at startup and written to `.env`). The frontend proxies all API calls through nginx to the backend.
