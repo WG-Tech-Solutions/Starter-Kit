@@ -1,7 +1,6 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Starter Kit — Main entry point
-# Starts Voyager SDK, runs setup, then brings up the dashboard containers.
+# Starter Kit — start.sh  (main entry point)
 # ─────────────────────────────────────────────────────────────────────────────
 set -e
 
@@ -24,25 +23,25 @@ echo -e "${NC}"
 echo -e "${CYAN}  AI Starter Pack — Dashboard Launcher${NC}"
 echo ""
 
-# ── Step 1: Start Voyager SDK + MediaMTX ─────────────────────────────────────
-echo -e "${CYAN}[1/3] Starting Voyager SDK...${NC}"
-bash "$SCRIPT_DIR/start_voyager.sh"
-echo ""
-
-# ── Step 2: Run setup (detect camera, build .env, create dirs) ────────────────
-echo -e "${CYAN}[2/3] Running setup...${NC}"
+# ── Step 1: setup — install MediaMTX, create dirs, create .env ───────────────
+echo -e "${CYAN}[1/4] Running setup...${NC}"
 bash "$SCRIPT_DIR/setup.sh"
 echo ""
 
+# ── Step 2: Start Voyager SDK + MediaMTX ─────────────────────────────────────
+echo -e "${CYAN}[2/4] Starting Voyager SDK...${NC}"
+bash "$SCRIPT_DIR/start_voyager.sh"
+echo ""
+
 # ── Step 3: Bring up dashboard containers ─────────────────────────────────────
-echo -e "${CYAN}[3/3] Starting dashboard containers...${NC}"
+echo -e "${CYAN}[3/4] Starting dashboard containers...${NC}"
 cd "$SCRIPT_DIR"
 sudo docker compose down --remove-orphans 2>/dev/null || true
 sudo docker compose up -d
 echo ""
 
-# ── Health check ──────────────────────────────────────────────────────────────
-echo "Waiting for backend to become healthy..."
+# ── Step 4: Health check ──────────────────────────────────────────────────────
+echo -e "${CYAN}[4/4] Waiting for backend to become healthy...${NC}"
 MAX_WAIT=60
 ELAPSED=0
 until sudo docker inspect --format='{{.State.Health.Status}}' dashboard-backend 2>/dev/null | grep -q "healthy"; do

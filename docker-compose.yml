@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   frontend:
@@ -26,8 +24,7 @@ services:
       - /tmp/hls:/tmp/hls
     env_file:
       - .env
-    # devices block is managed automatically by setup.sh
-    # do not edit manually — it will be overwritten on each start
+    # devices block managed by setup.sh — do not edit manually
     # devices:
     #   - /dev/video0:/dev/video0
     restart: unless-stopped

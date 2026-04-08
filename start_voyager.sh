@@ -1,6 +1,7 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Starter Kit — Start Voyager SDK + MediaMTX
+# Starter Kit — start_voyager.sh
+# Starts MediaMTX + voyager-sdk container, detects IP, updates .env
 # ─────────────────────────────────────────────────────────────────────────────
 set -e
 
@@ -15,8 +16,7 @@ DEST="/home/voyager-sdk"
 VENV="$DEST/venv"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SERVICE_DIR="$SCRIPT_DIR/voyager-service"
-LOG_DIR="/tmp"
-MEDIAMTX_LOG="$LOG_DIR/mediamtx.log"
+MEDIAMTX_LOG="$SCRIPT_DIR/mediamtx.log"
 
 echo -e "${CYAN}=== Starting Voyager SDK ===${NC}"
 
@@ -43,8 +43,7 @@ fi
 echo "Checking voyager-sdk container..."
 if ! docker inspect "$CONTAINER" > /dev/null 2>&1; then
     echo -e "${RED}ERROR: Container '$CONTAINER' not found.${NC}"
-    echo "  The voyager-sdk container must be created before running this script."
-    echo "  Please complete the AI Starter Pack setup guide first."
+    echo "  Complete the aistarterpack.html guide first."
     exit 1
 fi
 echo -e "${GREEN}✓ Container found${NC}"
@@ -84,9 +83,9 @@ docker exec "$CONTAINER" bash -c "
 # ── 8. Kill stale processes and free AIPU cores ───────────────────────────────
 echo "Clearing stale processes and freeing AIPU..."
 docker exec "$CONTAINER" bash -c "
-    pkill -9 -f ai_server.py         2>/dev/null || true
-    pkill -9 -f 'python3.*inference'  2>/dev/null || true
-    pkill -9 -f wginference           2>/dev/null || true
+    pkill -9 -f ai_server.py          2>/dev/null || true
+    pkill -9 -f 'python3.*inference'   2>/dev/null || true
+    pkill -9 -f wginference            2>/dev/null || true
     sleep 2
 " 2>/dev/null || true
 echo -e "${GREEN}✓ Processes cleared${NC}"
@@ -102,9 +101,8 @@ docker exec "$CONTAINER" bash -c "
 "
 echo -e "${GREEN}✓ HLS dirs ready${NC}"
 
-# ── 10. Detect voyager-sdk IP via docker exec ip addr ────────────────────────
+# ── 10. Detect voyager-sdk IP and update .env ─────────────────────────────────
 echo "Detecting voyager-sdk IP..."
-
 VOYAGER_IP=$(docker exec "$CONTAINER" ip addr show \
     | grep 'inet ' \
     | grep -v '127.0.0.1' \
@@ -112,21 +110,18 @@ VOYAGER_IP=$(docker exec "$CONTAINER" ip addr show \
     | cut -d/ -f1 \
     | head -1)
 
-# Fallback to Pi LAN IP if exec parse failed
 if [ -z "$VOYAGER_IP" ]; then
     echo -e "${YELLOW}WARNING: Could not parse IP from container — using Pi LAN IP${NC}"
     VOYAGER_IP=$(hostname -I | awk '{print $1}')
 fi
-
 echo -e "${GREEN}✓ voyager-sdk IP: $VOYAGER_IP${NC}"
 
-# Update VOYAGER_SDK_URL in .env
 ENV_FILE="$SCRIPT_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
     sed -i "s|^VOYAGER_SDK_URL=.*|VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001|" "$ENV_FILE"
     echo -e "${GREEN}✓ .env updated — VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001${NC}"
 else
-    echo -e "${YELLOW}  .env not found — skipping URL update (setup.sh will create it)${NC}"
+    echo -e "${YELLOW}  .env not found yet — will be created by setup.sh${NC}"
 fi
 
 # ── 11. Start ai_server.py ────────────────────────────────────────────────────
@@ -152,10 +147,7 @@ else
     exit 1
 fi
 
-# ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}=== Voyager SDK running ===${NC}"
 echo -e "  Voyager logs:  docker exec $CONTAINER tail -f /tmp/ai_server.log"
 echo -e "  MediaMTX logs: tail -f $MEDIAMTX_LOG"
-echo -e "  Stop voyager:  docker exec $CONTAINER pkill -f ai_server.py"
-echo -e "  Restart:       bash $(basename "$0")"
