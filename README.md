@@ -8,7 +8,7 @@ This Starter Kit is designed to empower university students, researchers, and en
 
 ### Step 1 — Clone this repo
 
-Run this on your **desktop or laptop** (not the Pi yet):
+Run this on your **desktop or laptop** terminal(not the Pi yet):
 
 ```bash
 git clone https://github.com/WG-Tech-Solutions/Starter-Kit.git

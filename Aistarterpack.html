@@ -731,6 +731,7 @@
     <div class="callout info" style="margin-bottom: 28px;">
       <span class="callout-icon">⏱️</span>
       <div class="callout-body"><strong>Estimated Time:</strong> 20–50 minutes to complete this guide (excluding download times, which depend on your internet speed)</div>
+      <!-- Mention download times if needed, FUTURE MENTIONS-->
     </div>
     <div class="meta-grid">
       <div class="meta-card">
@@ -760,8 +761,8 @@
         <thead><tr><th>Component</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>WGtech AI Accelerator Unit</td><td><strong>Raspberry Pi 5</strong> with pre-installed <strong>Axelera Metis M.2 PCIe card</strong> on PCIe HAT — supplied as one integrated unit</td></tr>
-          <tr><td>27W USB-C PSU (5V/5A)</td><td>Underpowered supplies cause random crashes and PCIe instability</td></tr>
-          <tr><td>microSD card 32GB+</td><td>Class 10 / A2 rated — faster cards improve boot and install times significantly</td></tr>
+          <tr><td>27W USB-C PSU (5V/5A)</td><td>For powering Pi 5, Underpowered supplies cause random crashes and PCIe instability</td></tr>
+          <tr><td>microSD card 64GB/+</td><td>Class 10 / A2 rated — faster cards improve boot and install times significantly</td></tr>
           <tr><td>microSD card reader</td><td>Required to flash the OS from your desktop or laptop</td></tr>
           <tr><td>HDMI display + cable</td><td>Pi 5 uses <strong>Micro-HDMI</strong> — standard HDMI cables will not fit</td></tr>
           <tr><td>USB keyboard + mouse</td><td>Required for initial setup; can be removed after configuration</td></tr>
@@ -805,6 +806,7 @@
       <li><strong>macOS:</strong> <code>imager_latest.dmg</code> — https://downloads.raspberrypi.com/imager/imager_latest.dmg</li>
       <li><strong>Linux:</strong> run <code>sudo apt install rpi-imager</code></li>
     </ul>
+    <p>When asked: "Do you want to allow this app to make changes to your device?" click <strong>Yes</strong>, After verifying the source</p>
 
     <h3>Step 2 — Launch &amp; Select Device</h3>
     <p>Open Imager. Click <strong>Choose Device</strong> → select <strong>Raspberry Pi 5</strong>.</p>
@@ -813,11 +815,11 @@
     <p>Click <strong>Choose OS</strong> → select <strong>Raspberry Pi OS (64-bit)</strong> from the recommended category.</p>
     <div class="callout info">
       <span class="callout-icon">ℹ️</span>
-      <div class="callout-body">The 64-bit version is required — the Axelera SDK and Docker images are ARM64 only and will not function on the 32-bit OS. Do <strong>not</strong> select the Lite or Full variants.</div>
+      <div class="callout-body">The 64-bit version is required — the Axelera SDK and Docker images are ARM64 only and will not function on the 32-bit OS. Do <b>not</b> select the Lite or Full variants.</div>
     </div>
 
     <h3>Step 4 — Select Storage</h3>
-    <p>Insert your microSD card. Click <strong>Choose Storage</strong> and select it from the list.</p>
+    <p>Insert your microSD card to the port. Click <strong>Choose Storage</strong> and select it from the list.</p>
     <div class="callout warn">
       <span class="callout-icon">⚠️</span>
       <div class="callout-body"><strong>Critical:</strong> The write process will completely erase the selected device. Double-check you are not selecting an external drive or USB stick.</div>
@@ -829,16 +831,21 @@
       <li><strong>Hostname:</strong> e.g. <code>rpi5-voyager</code></li>
       <li><strong>Username &amp; password:</strong> used for all logins after boot</li>
       <li><strong>Wi-Fi:</strong> enter SSID and password if not using Ethernet</li>
-      <li><strong>Locale:</strong> set timezone and keyboard layout</li>
+      <li><strong>Locale:</strong> set timezone and keyboard layout (eg: US for English)</li>
     </ul>
     <div class="callout info">
       <span class="callout-icon">ℹ️</span>
-      <div class="callout-body">Skip the <strong>Services</strong> tab — SSH is not required for this setup.</div>
+      <div class="callout-body">Skip the <b>Services</b> tab — SSH is not required for this setup.</div>
     </div>
 
     <h3>Step 6 — Write Image</h3>
-    <p>Click <strong>Write</strong> and confirm. The Imager will download (~1.1 GB), write, and verify the image. When complete, click <strong>Finish</strong> and safely eject the card.</p>
-    <p>Insert the microSD card into the underside slot of the Raspberry Pi 5, then connect all peripherals and power. On first boot the Pi will expand the filesystem and may reboot once — this takes 1–2 minutes and is normal.</p>
+    <p>Click <strong>I UNDERSTAND, ERASE AND WRITE</strong> and confirm. The Imager will download (~1.1 GB), write, and verify the image. When complete, click <strong>Finish</strong> and safely eject the card.</p>
+    <p>Insert the microSD card into the underside slot of the Raspberry Pi 5, then connect all peripherals, connect to the monitor and power it. On first boot the Pi will expand the filesystem and may reboot once — this takes 1–2 minutes and is normal.</p>
+    <p>From now, all the steps take part in the another <strong>Monitor</strong>.</p>
+    <div class="callout time">
+      <span class="callout-icon">⏱️</span>
+      <div class="callout-body">This may take 10-20 minutes.</div>
+    </div>
   </section>
 
   <!-- SECTION 3 -->
@@ -853,9 +860,18 @@
       <li>Or right-click the desktop → <strong>Open Terminal</strong></li>
       <li>Or click the Terminal icon in the taskbar</li>
     </ul>
+    <p>For Ease of running the commands for installations, clone the repository again here, and open the Aistarterpack.html in the browser.</p>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">bash</span>
+        <button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button>
+      </div>
+      <pre><code>git clone https://github.com/WG-Tech-Solutions/Starter-Kit.git
+cd Starter-Kit</code></pre>
+    </div>
     <div class="callout info">
       <span class="callout-icon">📌</span>
-      <div class="callout-body"><strong>Scope reminder:</strong> All commands from this point through Section 7 are run <strong>directly on the Raspberry Pi host</strong> — not inside Docker. The container does not exist yet. From Section 8 onwards, commands switch to inside the container.</div>
+      <div class="callout-body"><strong>Scope reminder:</strong> All commands from this point through Section 7 are run <b>directly on the Raspberry Pi host</b> — not inside Docker. The container does not exist yet. From Section 8 onwards, commands switch to inside the container.</div>
     </div>
   </section>
 
@@ -878,13 +894,16 @@
       <li><code>apt update</code> — refreshes the local package list from repositories</li>
       <li><code>apt full-upgrade -y</code> — upgrades all packages including the kernel; <code>-y</code> auto-confirms</li>
     </ul>
+    <p>During the upgrade, you may see a prompt asking whether to update or keep the current Chromium configuration. This is part of the system’s package manager—not a browser setting.
+
+In most cases, you can safely select the default option (<b>N</b>) to keep your current setup and continue.</p>
     <div class="output-wrap">
       <div class="output-header">Expected output</div>
       <pre><code>0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</code></pre>
     </div>
     <div class="callout time">
       <span class="callout-icon">⏱️</span>
-      <div class="callout-body">This may take 5–15 minutes. Do <strong>not reboot</strong> after — continue to the next section first.</div>
+      <div class="callout-body">This may take 10-30 minutes. Do <b>not reboot</b> after — continue to the next section first.</div>
     </div>
   </section>
 
@@ -906,7 +925,7 @@
     <ol>
       <li>Select <strong>Advanced Options</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>Select <strong>Bootloader Version</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
-      <li>Select <strong>Latest</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
+      <li>Select <strong>E1 Latest</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>When asked <em>"Reset boot ROM to defaults?"</em> — select <strong>&lt;No&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>Press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Esc</kbd> to return to the main menu</li>
       <li>Use the <strong>Tab</strong> key to highlight <strong>&lt;Finish&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd> to exit raspi-config</li>
@@ -1059,11 +1078,13 @@ lspci | grep -i axelera</code></pre>
     </div>
     <div class="output-wrap">
       <div class="output-header">Expected output</div>
-      <pre><code>metis                  65536  0
-metis/1.5.3, 6.x.x-rpi-v8+, aarch64: installed
-0001:01:00.0 Processing accelerators: Axelera AI Metis AI Processing Unit
-access control disabled, clients can connect from any host
-:0</code></pre>
+      <pre><code>metis                  131072  0
+metis/1.4.16, 6.12.47+rpt-rpi-2712, aarch64: installed
+metis/1.4.16, 6.12.47+rpt-rpi-v8, aarch64: installed
+metis/1.4.16, 6.12.75+rpt-rpi-2712, aarch64: installed
+metis/1.4.16, 6.12.75+rpt-rpi-v8, aarch64: installed
+0001:06:00.0 Processing accelerators: Axelera AI Metis AIPU (rev 02)
+</code></pre>
     </div>
     <div class="callout error">
       <span class="callout-icon">❌</span>
@@ -1434,7 +1455,7 @@ docker rm voyager-sdk</code></pre>
     <details class="faq-item">
       <summary>
         <span class="faq-tag inference">Inference</span>
-        Inference worked before but now <code>axdevice</code> shows no devices — what happened?
+        Inference worked before but now  "axdevice"  shows no devices — what happened?
         <span class="faq-arrow">▶</span>
       </summary>
       <div class="faq-body">
@@ -1504,7 +1525,7 @@ docker rm voyager-sdk</code></pre>
       </summary>
       <div class="faq-body">
         <p>Yes, with limitations. SSH works fine for all command-line steps. However, inference visualisation requires a display — the inference window renders via X11 directly to the screen. If you're running headless over SSH, you won't see the output window unless you set up X11 forwarding (<code>ssh -X</code>) to a machine with a display server.</p>
-        <p>To enable SSH: in Raspberry Pi Imager's OS customisation (Section 2, Step 5), go to the <strong>Services</strong> tab and enable SSH. You can then connect via <code>ssh username@hostname.local</code>.</p>
+        <p>To enable SSH: in Raspberry Pi Imager's OS customisation (Section 2, Step 5), go to the <strong>Services</strong> tab and enable SSH. You can then connect via <code>ssh username@hostname.local</code>. But, Wi-Fi or Network details entered at Step-5 should be the same that is used by the laptop.</p>
       </div>
     </details>
 
