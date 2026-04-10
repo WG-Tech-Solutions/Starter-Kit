@@ -25,8 +25,8 @@ services:
     env_file:
       - .env
     # devices block managed by setup.sh — do not edit manually
-    # devices:
-    #   - /dev/video0:/dev/video0
+    devices:
+      - /dev/video0:/dev/video0
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]

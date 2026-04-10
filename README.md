@@ -39,6 +39,8 @@ Return after you have:
 
 ## Prerequisites — verify before running start.sh
 
+Run In Host (Raspberry Pi 5) terminal -
+
 **1. OS is 64-bit**
 ```bash
 cat /etc/os-release | grep PRETTY
@@ -66,7 +68,7 @@ lspci | grep -i axelera
 docker ps -a | grep voyager-sdk
 ```
 
-**6. Inference confirmed working** — you ran `./inference.py` and saw FPS output.
+**6. Inference confirmed working** — you ran `./inference.py` previously in the Voyager-sdk container terminal and saw FPS output.
 
 ---
 
@@ -148,7 +150,9 @@ When it finishes you will see:
 ╚══════════════════════════════════════════════════════════╝
 ```
 
-Open a browser and go to **http://localhost**.
+Open a browser and go to **http://localhost**. 
+
+Before exploring the dashboard, it is recommended to read `USER_GUIDE.md` to understand the application’s features and usage.
 
 ---
 

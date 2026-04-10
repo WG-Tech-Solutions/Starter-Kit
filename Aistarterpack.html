@@ -396,10 +396,12 @@
     font-size: 14px;
     line-height: 1.65;
   }
-
+  strong {
+  display: inline;
+  }
   .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
   .callout-body { flex: 1; }
-  .callout-body strong { display: block; margin-bottom: 2px; }
+  .callout-body strong { display: inline;}
 
   .callout.warn { background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.3); color: #92400e; }
   .callout.info { background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.3); color: #1e40af; }
@@ -730,7 +732,11 @@
     <p>Complete end-to-end setup from flashing Raspberry Pi OS through running AI inference on the Axelera Metis accelerator. Follow each section in order — steps are interdependent.</p>
     <div class="callout info" style="margin-bottom: 28px;">
       <span class="callout-icon">⏱️</span>
-      <div class="callout-body"><strong>Estimated Time:</strong> 20–50 minutes to complete this guide (excluding download times, which depend on your internet speed)</div>
+      <div class="callout-body"><strong>Estimated Time:</strong> 
+      <ul>
+        <li>Active setup time: ~20–50 minutes</li>
+        <li>Total time (including downloads & installs): 2–4+ hours</li>
+      </ul></div>
       <!-- Mention download times if needed, FUTURE MENTIONS-->
     </div>
     <div class="meta-grid">
@@ -765,7 +771,8 @@
           <tr><td>microSD card 64GB/+</td><td>Class 10 / A2 rated — faster cards improve boot and install times significantly</td></tr>
           <tr><td>microSD card reader</td><td>Required to flash the OS from your desktop or laptop</td></tr>
           <tr><td>HDMI display + cable</td><td>Pi 5 uses <strong>Micro-HDMI</strong> — standard HDMI cables will not fit</td></tr>
-          <tr><td>USB keyboard + mouse</td><td>Required for initial setup; can be removed after configuration</td></tr>
+          <tr><td>USB keyboard + mouse</td><td>Required for setup, to be connected to the <strong>USB ports of raspberry pi 5</strong></td></tr>
+          <tr><td>Monitor/ Display</td><td>Any standard monitor or TV with HDMI input works</td></tr>
           <tr><td>Ethernet or Wi-Fi</td><td>Ethernet is strongly preferred for reliability during large downloads</td></tr>
         </tbody>
       </table>
@@ -819,7 +826,7 @@
     </div>
 
     <h3>Step 4 — Select Storage</h3>
-    <p>Insert your microSD card to the port. Click <strong>Choose Storage</strong> and select it from the list.</p>
+    <p>Insert your microSD card to the desktop/laptop port. Click <strong>Choose Storage</strong> and select it from the list.</p>
     <div class="callout warn">
       <span class="callout-icon">⚠️</span>
       <div class="callout-body"><strong>Critical:</strong> The write process will completely erase the selected device. Double-check you are not selecting an external drive or USB stick.</div>
@@ -840,8 +847,20 @@
 
     <h3>Step 6 — Write Image</h3>
     <p>Click <strong>I UNDERSTAND, ERASE AND WRITE</strong> and confirm. The Imager will download (~1.1 GB), write, and verify the image. When complete, click <strong>Finish</strong> and safely eject the card.</p>
-    <p>Insert the microSD card into the underside slot of the Raspberry Pi 5, then connect all peripherals, connect to the monitor and power it. On first boot the Pi will expand the filesystem and may reboot once — this takes 1–2 minutes and is normal.</p>
-    <p>From now, all the steps take part in the another <strong>Monitor</strong>.</p>
+    <p>Insert the microSD card into the underside slot of the Raspberry Pi 5.</p>
+    <p>Now connect the required peripherals:</p>
+    <ul>
+      <li><strong>Display:</strong> Connect a monitor using a Micro-HDMI to HDMI cable</li>
+      <li><strong>Power:</strong> Connect the 27W USB-C power supply</li>
+      <li><strong>Input devices:</strong> Connect a USB keyboard and mouse (or via USB dongle, if wireless)</li>
+    </ul>
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body">As the Raspberry Pi is a single-board computer, all peripherals must be connected externally for initial setup.</div>
+    </div>
+    <p>Once everything is connected, power on the device.</p>
+    <p>On first boot, the Raspberry Pi will automatically expand the filesystem and may reboot once — this takes 1–2 minutes and is normal.</p>
+    <p>All further steps will be performed using the connected monitor.</p>
     <div class="callout time">
       <span class="callout-icon">⏱️</span>
       <div class="callout-body">This may take 10-20 minutes.</div>
@@ -903,7 +922,7 @@ In most cases, you can safely select the default option (<b>N</b>) to keep your 
     </div>
     <div class="callout time">
       <span class="callout-icon">⏱️</span>
-      <div class="callout-body">This may take 10-30 minutes. Do <b>not reboot</b> after — continue to the next section first.</div>
+      <div class="callout-body">This may take 10-30 minutes. Do <b>not reboot</b> after this — continue to the next section first.</div>
     </div>
   </section>
 
@@ -928,17 +947,25 @@ In most cases, you can safely select the default option (<b>N</b>) to keep your 
       <li>Select <strong>E1 Latest</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>When asked <em>"Reset boot ROM to defaults?"</em> — select <strong>&lt;No&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>Press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Esc</kbd> to return to the main menu</li>
-      <li>Use the <strong>Tab</strong> key to highlight <strong>&lt;Finish&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd> to exit raspi-config</li>
     </ol>
-    <p>Apply the update and reboot:</p>
+    <p>Apply the update:</p>
     <div class="code-wrap">
       <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
-      <pre><code>sudo rpi-eeprom-update -a
-sudo reboot</code></pre>
+      <pre><code>sudo rpi-eeprom-update -a</code></pre>
     </div>
     <div class="callout info">
       <span class="callout-icon">ℹ️</span>
-      <div class="callout-body">If output shows <code>BOOTLOADER: up to date</code>, it's already current. Reboot is still required. Log back in and open a terminal after reboot.</div>
+     <div class="callout-body">Expected OUTPUT:<br>
+BOOTLOADER: up to date<br>
+CURRENT: Mon 23 Feb 10:01:39 UTC 2026 (1771840899)<br>
+LATEST: Mon 23 Feb 10:01:39 UTC 2026 (1771840899)<br>
+RELEASE: latest (/usr/lib/firmware/raspberrypi/bootloader-2712/latest)
+</div>
+    </div>
+    <p>Reboot the system:</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>sudo reboot</code></pre>
     </div>
 
     <h3>Part B — Enable PCIe Gen3</h3>
@@ -953,9 +980,7 @@ sudo reboot</code></pre>
       <li>Select <strong>PCIe Speed</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>When asked <em>"Would you like to enable PCIe Gen 3 mode?"</em> — select <strong>&lt;Yes&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
       <li>Dismiss the confirmation dialog → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
-      <li>Press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Esc</kbd> to return to the main menu</li>
       <li>Tab to <strong>&lt;Finish&gt;</strong> → press <kbd style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 6px;">Enter</kbd></li>
-      <li>If asked <em>"Would you like to reboot now?"</em> — select <strong>&lt;No&gt;</strong> — we will reboot manually below</li>
     </ol>
     <p>Reboot to apply the PCIe Gen3 setting:</p>
     <div class="code-wrap">
@@ -1028,7 +1053,7 @@ sudo reboot</code></pre>
       <span class="section-num">§ 07</span>
       <h2>Install Axelera Metis Driver &amp; Runtime</h2>
     </div>
-    <p>The Metis card requires a kernel driver (DKMS module) and runtime library. These must be installed on the <strong>host system</strong> — kernel modules cannot be loaded from inside a container.</p>
+    <p>The Metis card requires a kernel driver (DKMS module) and runtime library. These must be installed on the <strong>host system (the Raspberry Pi OS itself, not inside a Docker container) </strong>- since kernel modules cannot be loaded from inside a container.</p>
 
     <h3>Part A — Add Axelera GPG Key</h3>
     <div class="code-wrap">
@@ -1184,11 +1209,11 @@ cd voyager-sdk
     </ul>
     <div class="callout time">
       <span class="callout-icon">⏱️</span>
-      <div class="callout-body">Installation takes <strong>10–30 minutes</strong> depending on internet speed. Extensive pip output is expected — this is normal.</div>
+      <div class="callout-body">Installation takes <strong>20-60 minutes</strong> depending on internet speed. Extensive pip output is expected — this is normal.</div>
     </div>
     <div class="callout error">
       <span class="callout-icon">❌</span>
-      <div class="callout-body"><strong>If git clone fails:</strong> Run <code>curl https://github.com</code> to test connectivity. If it fails, the container was started without <code>--network=host</code>. Exit, run <code>docker rm voyager-sdk</code>, and redo Section 8.</div>
+      <div class="callout-body"><strong>If git clone fails:</strong> Run <strong><code>curl https://github.com</code></strong> to test connectivity. If it fails, the container was started without <code>--network=host</code>. Exit, run <strong><code>docker rm voyager-sdk</code></strong>, and redo Section 8.</div>
     </div>
   </section>
 
@@ -1247,6 +1272,13 @@ Inference complete. Average FPS: 45.7</code></pre>
       <div class="callout-body"><strong>Success:</strong> FPS is displayed and incrementing — the Metis card is offloading and accelerating inference. Expected range is 30–60+ FPS for YOLOv5s at 1080p. Lower FPS may indicate thermal throttling — check <code>vcgencmd measure_temp</code>.</div>
     </div>
 
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">You may see GPU-related warnings from ONNX Runtime during setup like <strong>GPU device discovery failed: Failed to open file: "/sys/class/drm/card1/device/vendor"</strong>. These are expected on Raspberry Pi and can be safely ignored — inference runs on the Metis accelerator, not the GPU.</div>
+    </div>
+
+
+
     <h3>Step 5 — If Inference Fails: Reboot Recovery</h3>
     <p>If inference crashes, hangs, or <code>axdevice</code> returns no devices after a previously working session, the AIPU may be in a bad state. A full reboot sequence clears this reliably.</p>
 
@@ -1289,6 +1321,15 @@ axdevice  # verify card is ready
       <span class="callout-icon">ℹ️</span>
       <div class="callout-body">If <code>axdevice</code> still shows no device after a reboot, run <code>lspci | grep -i axelera</code> on the host to confirm the card is visible at the PCIe level. If it is not, power-cycle the Pi fully (not just reboot) and re-check physical connections.</div>
     </div>
+
+    
+    <p>If the inference still fails or want to try it in another approach then try this command instead-</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-lang">bash · container</span><button class="copy-btn" onclick="copyCode(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy</button></div>
+      <pre><code>./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4 --no-display
+</code></pre>
+    </div>
+    <p>If you see the FPS output, then the Metis card is offloading and accelerating inference.</p>
   </section>
 
   <hr/>
@@ -1525,7 +1566,7 @@ docker rm voyager-sdk</code></pre>
       </summary>
       <div class="faq-body">
         <p>Yes, with limitations. SSH works fine for all command-line steps. However, inference visualisation requires a display — the inference window renders via X11 directly to the screen. If you're running headless over SSH, you won't see the output window unless you set up X11 forwarding (<code>ssh -X</code>) to a machine with a display server.</p>
-        <p>To enable SSH: in Raspberry Pi Imager's OS customisation (Section 2, Step 5), go to the <strong>Services</strong> tab and enable SSH. You can then connect via <code>ssh username@hostname.local</code>. But, Wi-Fi or Network details entered at Step-5 should be the same that is used by the laptop.</p>
+        <p>To enable SSH: in Raspberry Pi Imager's OS customisation (Section 2, Step 5), go to the <strong>Services</strong> tab and enable SSH. You can then connect via <code>ssh username@hostname.local</code>. But, Wi-Fi or Network details entered at Step-5 should be the same that is used by the laptop. Also, check if you have sufficient ports on your desktop or laptop to connect the peripherals to the raspberry pi 5.</p>
       </div>
     </details>
 

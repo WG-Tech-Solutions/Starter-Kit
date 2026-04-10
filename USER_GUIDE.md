@@ -126,7 +126,7 @@ Click **Deploy** to start the deployment process.
 
 ![Deployment](Images/Deployment.png)
 
-After clicking Deploy, the model appears under **Active Models** while deployment is in progress (typically 20–60 minutes).
+After clicking Deploy, the model appears under **Active Models** while deployment is in progress (typically 10–60 minutes).
 
 To remove a model, use the remove option from any slot and confirm the action.
 
@@ -174,3 +174,17 @@ Recordings are saved to the default path shown on the Recordings page. This maps
 ### 7. Can I use Wi-Fi instead of Ethernet for RTSP streams?
 
 Yes, but Ethernet is strongly recommended. Wi-Fi can introduce latency and packet loss which causes stream instability and dropped frames.
+
+### 8. What should the Data.yaml contain?
+
+The Standard format is like below-
+
+path: ./model  
+train: train/images  
+val: valid/images  
+test: test/images  
+nc: 2  
+names:   
+&nbsp;&nbsp;&nbsp;0: fire  
+&nbsp;&nbsp;&nbsp;1: spark  
+
