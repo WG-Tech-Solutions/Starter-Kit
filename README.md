@@ -267,3 +267,13 @@ fuser /dev/video0   # check if locked by another process
 ```
 
 Re-run `./start.sh` with the camera plugged in if the devices block is empty.
+
+---
+
+## For More Information and References
+
+Raspberry Pi Documentation: https://www.raspberrypi.com/documentation/
+
+Axelera's Voyager SDK repository: https://github.com/axelera-ai-hub/voyager-sdk
+
+
