@@ -76,14 +76,14 @@ HLS_DIR=data/hls
 HLS_SEGMENT_DURATION=2
 HLS_PLAYLIST_SIZE=6
 
-# ── Voyager SDK — updated automatically by start_voyager.sh ──────────────────
+# ── Voyager SDK (do not change unless you know what you're doing) ─────────────
 VOYAGER_SDK_URL=http://172.17.0.1:8001
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ORIGINS=http://localhost
 ENVEOF
 
-echo -e "${GREEN}✓ .env overwritten${NC}"
+echo -e "${GREEN}✓ .env written${NC}"
 
 # ── 4. Create data directories ────────────────────────────────────────────────
 mkdir -p "$SCRIPT_DIR/data/recordings" \
