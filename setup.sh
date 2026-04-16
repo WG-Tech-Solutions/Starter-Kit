@@ -57,11 +57,8 @@ else
     echo -e "${GREEN}✓ MediaMTX config already exists${NC}"
 fi
 
-# ── 3. Create .env if it doesn't exist ───────────────────────────────────────
-# VOYAGER_SDK_URL is written by start_voyager.sh after container IP detection.
-# This block only runs on first-time setup.
-if [ ! -f "$SCRIPT_DIR/.env" ]; then
-    cat > "$SCRIPT_DIR/.env" << 'ENVEOF'
+# ── 3. ALWAYS rewrite .env ───────────────────────────────────────────────────
+cat > "$SCRIPT_DIR/.env" << 'ENVEOF'
 # ── App ───────────────────────────────────────────────────────────────────────
 APP_ENV=production
 APP_HOST=0.0.0.0
@@ -85,10 +82,8 @@ VOYAGER_SDK_URL=http://172.17.0.1:8001
 # ── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ORIGINS=http://localhost
 ENVEOF
-    echo -e "${GREEN}✓ .env created${NC}"
-else
-    echo -e "${GREEN}✓ .env already exists${NC}"
-fi
+
+echo -e "${GREEN}✓ .env overwritten${NC}"
 
 # ── 4. Create data directories ────────────────────────────────────────────────
 mkdir -p "$SCRIPT_DIR/data/recordings" \
