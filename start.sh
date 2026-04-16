@@ -36,8 +36,12 @@ echo ""
 # ── Step 3: Bring up dashboard containers ─────────────────────────────────────
 echo -e "${CYAN}[3/4] Starting dashboard containers...${NC}"
 cd "$SCRIPT_DIR"
-sudo docker compose down --remove-orphans 2>/dev/null || true
-sudo docker compose up -d
+
+echo -e "${CYAN}Checking for updates...${NC}"
+sudo docker compose pull --quiet
+
+# Start (will recreate only if needed)
+sudo docker compose up -d --force-recreate
 echo ""
 
 # ── Step 4: Health check ──────────────────────────────────────────────────────
