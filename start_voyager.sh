@@ -1,7 +1,7 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
 # Starter Kit — start_voyager.sh
-# Starts MediaMTX + voyager-sdk container, detects IP, updates .env
+# Starts MediaMTX + voyager-sdk container
 # ─────────────────────────────────────────────────────────────────────────────
 set -e
 
@@ -101,30 +101,7 @@ docker exec "$CONTAINER" bash -c "
 "
 echo -e "${GREEN}✓ HLS dirs ready${NC}"
 
-# ── 10. Detect voyager-sdk IP and update .env ─────────────────────────────────
-echo "Detecting voyager-sdk IP..."
-VOYAGER_IP=$(docker exec "$CONTAINER" ip addr show \
-    | grep 'inet ' \
-    | grep -v '127.0.0.1' \
-    | awk '{print $2}' \
-    | cut -d/ -f1 \
-    | head -1)
-
-if [ -z "$VOYAGER_IP" ]; then
-    echo -e "${YELLOW}WARNING: Could not parse IP from container — using Pi LAN IP${NC}"
-    VOYAGER_IP=$(hostname -I | awk '{print $1}')
-fi
-echo -e "${GREEN}✓ voyager-sdk IP: $VOYAGER_IP${NC}"
-
-ENV_FILE="$SCRIPT_DIR/.env"
-if [ -f "$ENV_FILE" ]; then
-    sed -i "s|^VOYAGER_SDK_URL=.*|VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001|" "$ENV_FILE"
-    echo -e "${GREEN}✓ .env updated — VOYAGER_SDK_URL=http://${VOYAGER_IP}:8001${NC}"
-else
-    echo -e "${YELLOW}  .env not found yet — will be created by setup.sh${NC}"
-fi
-
-# ── 11. Start ai_server.py ────────────────────────────────────────────────────
+# ── 10. Start ai_server.py ────────────────────────────────────────────────────
 echo "Starting ai_server.py..."
 docker exec "$CONTAINER" bash -c "
     source $VENV/bin/activate
@@ -137,7 +114,7 @@ docker exec "$CONTAINER" bash -c "
 "
 sleep 3
 
-# ── 12. Verify ────────────────────────────────────────────────────────────────
+# ── 11. Verify ────────────────────────────────────────────────────────────────
 echo "Verifying voyager-sdk health..."
 if docker exec "$CONTAINER" curl -sf http://localhost:8001/health > /dev/null; then
     echo -e "${GREEN}✓ voyager-sdk is UP at http://localhost:8001${NC}"
