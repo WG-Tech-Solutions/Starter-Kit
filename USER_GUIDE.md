@@ -62,7 +62,6 @@ Select Slot → Start Recording → Pause or Stop Recording
 
 ![Recording](Images/Recording.png)
 
-**Important:** Recording duration should be a minimum of 15 seconds.
 
 ---
 
@@ -130,6 +129,8 @@ After clicking Deploy, the model appears under **Active Models** while deploymen
 
 To remove a model, use the remove option from any slot and confirm the action.
 
+**Note:** Don't stop the application (run `./stop.sh` command) when model deployment is in process. 
+
 ---
 
 ## Getting Started
@@ -159,17 +160,18 @@ Ensure that:
 
 Deployment typically takes 20–60 minutes depending on model size. The model will appear under **Active Models** during this time. Do not close the application while deployment is in progress.
 
-### 4. What video formats are supported for Video File input?
+### 4. Why is the application slow or laggy sometimes?
+
+The application's performance depends on available processing power. On Raspberry Pi or other low-power systems, inference and multiple concurrent streams can cause latency. 
+
+### 5. What video formats are supported for Video File input?
 
 Currently `.mp4` files are supported.
 
-### 5. Where are recordings saved?
+### 6. Where are recordings saved?
 
 Recordings are saved to the default path shown on the Recordings page. This maps to the `data/recordings/` folder in the Starter Kit directory on the Raspberry Pi.
 
-### 6. What is the minimum recording duration?
-
-15 seconds. Recordings shorter than this may not save correctly.
 
 ### 7. Can I use Wi-Fi instead of Ethernet for RTSP streams?
 
@@ -187,4 +189,6 @@ nc: 2
 names:   
 &nbsp;&nbsp;&nbsp;0: fire  
 &nbsp;&nbsp;&nbsp;1: spark  
+
+
 

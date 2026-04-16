@@ -22,6 +22,9 @@ services:
       - ./data/models:/app/data/models
       - ./data/hls:/app/data/hls
       - /tmp/hls:/tmp/hls
+      - /:/host:rw                               # full Pi filesystem — allows user-specified save paths
+      - /etc/localtime:/etc/localtime:ro         # inherit host timezone automatically
+      - /etc/timezone:/etc/timezone:ro
     env_file:
       - .env
     # devices block managed by setup.sh — do not edit manually

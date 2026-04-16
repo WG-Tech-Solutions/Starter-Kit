@@ -10,16 +10,16 @@ This Starter Kit is designed to empower university students, researchers, and en
 
 ### Step 1 — Clone this repo
 
-Run this on your **Raspberry Pi** terminal:
+Run this on your **Desktop/Laptop** terminal:
 
 ```bash
 git clone https://github.com/WG-Tech-Solutions/Starter-Kit.git
 cd Starter-Kit
 ```
 
-### Step 2 — Open aistarterpack.html
+### Step 2 — Open Aistarterpack.html
 
-Inside the cloned folder you will find `aistarterpack.html`. Open it in a browser on your desktop or laptop — it walks you through everything on the Raspberry Pi:
+Inside the cloned folder you will find `Aistarterpack.html`. Open it in a browser on your desktop or laptop — it walks you through everything on the Raspberry Pi:
 
 - Flashing the OS
 - Enabling PCIe Gen3
@@ -27,12 +27,12 @@ Inside the cloned folder you will find `aistarterpack.html`. Open it in a browse
 - Installing the Axelera Metis driver
 - Confirming AI inference is working on the AIPU
 
-This takes 20–50 minutes. **Do not run any scripts in this repo until you have finished the HTML guide.**
+This takes a total time of 2-4+ hours (Active set up time: 20-50 mins). **Do not run any scripts in this repo until you have finished the HTML guide.**
 
 ### Step 3 — Come back here
 
 Return after you have:
-- Completed all sections of `aistarterpack.html`
+- Completed all sections of `Aistarterpack.html`
 - Seen FPS output from `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the voyager-sdk container
 
 ---
@@ -76,7 +76,7 @@ docker ps -a | grep voyager-sdk
 
 ```
 Starter-Kit/
-├── aistarterpack.html    ← hardware setup guide — start here
+├── Aistarterpack.html    ← hardware setup guide — start here
 ├── README.md             ← this file
 ├── userguide.md          ← how to use the dashboard after setup
 ├── start.sh              ← main entry point — run this every time
@@ -275,5 +275,3 @@ Re-run `./start.sh` with the camera plugged in if the devices block is empty.
 Raspberry Pi Documentation: https://www.raspberrypi.com/documentation/
 
 Axelera's Voyager SDK repository: https://github.com/axelera-ai-hub/voyager-sdk
-
-
