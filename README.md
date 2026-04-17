@@ -32,7 +32,7 @@ This takes a total time of 2-4+ hours (Active set up time: 20-50 mins). **Do not
 ### Step 3 — Come back here
 
 Return after you have:
-- Completed all sections of `Aistarterpack.html`
+- Completed all sections of [Aistarterpack.html](Aistarterpack.html)
 - Seen FPS output from `./inference.py yolov5s-v7-coco media/traffic1_1080p.mp4` inside the voyager-sdk container
 
 ---
@@ -152,9 +152,9 @@ When it finishes you will see:
 
 Open a browser and go to **http://localhost**. 
 
-Before exploring the dashboard, it is recommended to read `USER_GUIDE.md` to understand the application's features, usage, and FAQs.
+Before exploring the dashboard, it is recommended to read [USER_GUIDE.md](USER_GUIDE.md) to understand the application's features, usage, and FAQs.
 
-The `/videos` folder contains sample videos that can be used as input for selected object classes. Refer to `videos/VIDEOS_GUIDE.md` for details on the supported classes for model deployment.
+The [videos](videos/) folder contains sample videos that can be used as input for selected object classes. Refer to [videos/VIDEOS_GUIDE.md](videos/VIDEOS_GUIDE.md) for details on the supported classes for model deployment.
 
 ---
 
@@ -171,7 +171,7 @@ xhost +local:docker
 
 ## USB camera behaviour
 
-`setup.sh` checks for `/dev/video0` on every run and automatically updates `docker-compose.yml`:
+[setup.sh](setup.sh) checks for `/dev/video0` on every run and automatically updates [docker-compose.yml](docker-compose.yml):
 
 | Camera state | What happens |
 |---|---|
@@ -179,7 +179,7 @@ xhost +local:docker
 | Not plugged in | Warning printed, USB features disabled in dashboard |
 | Plugged in after containers started | Run `./start.sh` again |
 
-> **Do not edit the `devices:` block in `docker-compose.yml` manually** — it is managed by `setup.sh`.
+> **Do not edit the `devices:` block in [docker-compose.yml](docker-compose.yml) manually** — it is managed by [setup.sh](setup.sh).
 
 ---
 
