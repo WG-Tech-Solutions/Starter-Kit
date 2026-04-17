@@ -152,7 +152,9 @@ When it finishes you will see:
 
 Open a browser and go to **http://localhost**. 
 
-Before exploring the dashboard, it is recommended to read `USER_GUIDE.md` to understand the application’s features and usage.
+Before exploring the dashboard, it is recommended to read `USER_GUIDE.md` to understand the application's features, usage, and FAQs.
+
+The `/videos` folder contains sample videos that can be used as input for selected object classes. Refer to `videos/VIDEOS_GUIDE.md` for details on the supported classes for model deployment.
 
 ---
 

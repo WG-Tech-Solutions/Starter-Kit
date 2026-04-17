@@ -156,28 +156,45 @@ Ensure that:
 - Click the refresh icon in the USB section to reload available devices
 - If it still doesn't appear, stop the application, plug the camera in, and run `./start.sh` again — USB camera detection runs at startup
 
-### 3. How long does model deployment take?
+### 3. Why is the model inference taking a long time to stream or display?
+
+By default, model inference results should appear within a few seconds. If it is taking significantly longer, it may be due to temporary delays or system issues.
+
+Try the following steps to resolve the issue:
+- Refresh the dashboard page
+- Stop the stream and start it again
+- Restart the application:
+  ```bash
+  ./stop.sh
+  ./start.sh
+To check the Voyager SDK / inference server logs, run:
+  ```bash
+    docker exec voyager-sdk tail -f /tmp/ai_server.log  
+```
+
+### 4. How long does model deployment take?
 
 Deployment typically takes 20–60 minutes depending on model size. The model will appear under **Active Models** during this time. Do not close the application while deployment is in progress.
 
-### 4. Why is the application slow or laggy sometimes?
+### 5. Why is the application slow or laggy sometimes?
 
 The application's performance depends on available processing power. On Raspberry Pi or other low-power systems, inference and multiple concurrent streams can cause latency. 
 
-### 5. What video formats are supported for Video File input?
+### 6. What video formats are supported for Video File input?
 
-Currently `.mp4` files are supported.
+Currently `.mp4` files are supported. Use 1080p videos for best results.
 
-### 6. Where are recordings saved?
+### 7. Where are recordings saved?
 
 Recordings are saved to the default path shown on the Recordings page. This maps to the `data/recordings/` folder in the Starter Kit directory on the Raspberry Pi.
 
 
-### 7. Can I use Wi-Fi instead of Ethernet for RTSP streams?
+### 8. Can I use Wi-Fi instead of Ethernet for RTSP streams?
 
 Yes, but Ethernet is strongly recommended. Wi-Fi can introduce latency and packet loss which causes stream instability and dropped frames.
 
-### 8. What should the Data.yaml contain?
+
+### 9. What should the Data.yaml contain?
 
 The Standard format is like below-
 
