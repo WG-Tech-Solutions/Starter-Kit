@@ -14,7 +14,7 @@ This folder contains 2 sample videos where you can test the default YOLOv8n mode
 
 **Expected annotated output:**
 
-![Animals City Sample Output](Images/Animals_City.png)
+![Animals City Sample Output](../Images/Animals_City.png)
 
 ---
 
@@ -29,7 +29,7 @@ This folder contains 2 sample videos where you can test the default YOLOv8n mode
 
 **Expected annotated output:**
 
-![Restaurant Sample Output](Images/Restaurant.png)
+![Restaurant Sample Output](../Images/Restaurant.png)
 
 ---
 
